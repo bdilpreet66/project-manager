@@ -106,10 +106,10 @@ export default function Navigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="ProjectManagerTabs" component={ProjectManagerTabs} />
-                <Stack.Screen name="MemberTabs" component={MemberTabs} />
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="ProjectManagerTabs" component={ProjectManagerTabs} />
+                <Stack.Screen name="MemberTabs" component={MemberTabs} />
             </Stack.Navigator>
         </NavigationContainer>
     );
