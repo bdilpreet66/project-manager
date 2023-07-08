@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getAdmin, getLoggedIn } from "./store/storage"
 
 // Import your screens here
 import LoginScreen from './screens/LoginScreen';
@@ -82,27 +81,6 @@ function MemberStack() {
 }
 
 export default function Navigation() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-  
-    useEffect(() => {
-      const fetchAuthState = async () => {
-        const loggedIn = await getLoggedIn();
-        const admin = await getAdmin();
-        
-        setIsLoggedIn(loggedIn);
-        setIsAdmin(admin);
-        setIsLoading(false);
-      };
-  
-      fetchAuthState();
-    }, []);
-  
-    if (isLoading) {
-      return null; // You can return a loading screen here.
-    }
-
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>

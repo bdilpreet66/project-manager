@@ -1,66 +1,88 @@
-import * as SQLite from 'expo-sqlite';
+import { executeSql, initializeDB } from './storage';
+
+export const createUser = async (email, password, type, hourly_rate) => {
+    try {
+        await executeSql('INSERT INTO Users (email, password, type, hourly_rate) VALUES (?, ?, ?, ?)', [email, password, type, hourly_rate]);
+    } catch (error) {
+        console.error("Error creating user: ", error);
+        throw error;
+    }
+};
+
+export const updateUser = async (email, password, type, hourly_rate) => {
+    try {
+        await executeSql('UPDATE Users SET password = ?, type = ?, hourly_rate = ? WHERE email = ?', [password, type, hourly_rate, email]);
+    } catch (error) {
+        console.error("Error updating user: ", error);
+        throw error;
+    }
+};
+
+export const deleteUser = async (email) => {
+    try {
+        await executeSql('DELETE FROM Users WHERE email = ?', [email]);
+    } catch (error) {
+        console.error("Error deleting user: ", error);
+        throw error;
+    }
+};
+
+export const listUsers = async () => {
+    try {
+        const users = await executeSql('SELECT * FROM Users');
+        return users;
+    } catch (error) {
+        console.error("Error listing users: ", error);
+        throw error;
+    }
+};
+
+export const searchUsers = async (email) => {
+    try {
+        const users = await executeSql('SELECT * FROM Users WHERE email = ?', [email]);
+        return users;
+    } catch (error) {
+        console.error("Error searching users: ", error);
+        throw error;
+    }
+};
+
+export const checkAdmin = async (email) => {
+    try {
+        const users = await executeSql('SELECT * FROM Users WHERE email = ? AND type = "admin"', [email]);
+        return users.length > 0;
+    } catch (error) {
+        console.error("Error checking admin: ", error);
+        throw error;
+    }
+};
 
 export const validateLogin = async (email, password) => {
-    const db = await openDB();
-    /*let db = SQLite.openDatabase(
-        {
-            name: 'UserDatabase.db',
-            location: 'default',
-            createFromLocation: '~www/UserDatabase.db',
-        },
-        () => console.log('Database opened!'),
-        error => console.error("SQLite Error: " + error),
-    );*/
-    /*
-    let sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
-    db.transaction((tx) => {
-        tx.executeSql(sql, [email, password], (tx, results) => {
-            let len = results.rows.length;
-            let row = results.rows.item(0);
-            if (len > 0) {
-                // A match was found in the database
-                console.log('User login successful');
-                return {success: true, type:'admin', message: 'User login successfully.'}
-            } else {
-                // No match found
-                console.log('Login Failed');
-                return {success: false, type: 'admin', message: 'Login failed.'}
-            }
-        });
-    });*/
-    
-    //return null;
-    return {success: true, type:'admin', message: 'User login successfully.'}
-    //console.log('Login!');
-}
+    try {
+      const users = await searchUsers(email);
+  
+      if (users.length > 0) {
+        const user = users[0];
+  
+        if (user.password === password) {
+          return { success: true, data: user, message: 'User login successful.' };
+        } else {
+          return { success: false, data: '', message: 'Incorrect password.' };
+        }
+      } else {
+        return { success: false, data: '', message: 'User not found.' };
+      }
+    } catch (error) {
+      console.error('Error validating login:', error);
+      throw error;
+    }
+};
 
-export const registerUser = () => {
-    // Open a new database connection
-    let db = SQLite.openDatabase(
-        {
-            name: 'UserDatabase.db',
-            location: 'default',
-            createFromLocation: '~www/UserDatabase.db',
-        },
-        () => console.log('Database opened!'),
-        error => console.error("SQLite Error: " + error),
-    );
-    db.transaction(function (txn) {
-        // Create the users table if it does not already exist
-        txn.executeSql(
-            "CREATE TABLE IF NOT EXISTS users(user_id INTEGER PRIMARY KEY AUTOINCREMENT, email VARCHAR(30), password VARCHAR(30), type VARCHAR(10))",
-            []
-        );
-        // Insert the new user into the users table
-        txn.executeSql(
-            "INSERT INTO users (email, password, type) VALUES (?,?,?)",
-            [email, password, type],
-            function (tx, res) {
-                console.log('User inserted successfully');
-            },
-            function (error) {
-                console.log('Error occurred while inserting user', error);
-            }
-        );
-    });
-}
+export const initializeUsers = async () => {
+    try {
+        await initializeDB();
+    } catch (error) {
+        console.error("Error initializing users: ", error);
+        throw error;
+    }
+};
