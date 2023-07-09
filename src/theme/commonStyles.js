@@ -7,6 +7,7 @@ export default {
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: "100%",
+    paddingVertical: 20,
   },
   logo: {
     width: 40 * 2,
@@ -15,10 +16,10 @@ export default {
     marginTop: 64,
     marginBottom: 20,
   },
-  logoLabel: {
-    width: 84 * 2,
-    height: 90 * 2,
-    alignSelf: 'center',     
+  logoLabel: {    
+    height: 50,
+    alignSelf: 'center',    
+    marginTop: 40,
     marginBottom: 20,
   },
   heading: {
@@ -30,12 +31,12 @@ export default {
   },
   button: {    
     borderRadius: 5,
-    width: '90%', // Adjust width as per your requirement
+    width: '100%', // Adjust width as per your requirement
     alignSelf: 'center', // This will center the button
-    paddingHorizontal: 10,
+    paddingHorizontal: 24,
     paddingVertical: 18,    
     marginTop: 40,
-    marginBottom: 40,
+    marginBottom: 40,    
   },
   buttonPrimary: {
     backgroundColor: theme.colors.primary,

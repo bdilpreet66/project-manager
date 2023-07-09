@@ -15,10 +15,10 @@ const LogoutScreen = () => {
   };
 
   return (   
-    <View style={styles.container}>
+    <View style={commonStyles.container}>
       <Image source={require('../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain' />
       <Image source={require('../../assets/logout.png')} resizeMode='cover' />      
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonError]} onPress={handleLogout}>
+      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonError,styles.button]} onPress={handleLogout}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTexError]}>Log Out</Text>
       </TouchableOpacity>  
     </View>
@@ -32,7 +32,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10, // You might want some padding to ensure the items are not stuck to the edges of the screen
-  }
+  },
+  button: {
+    width: '90%',
+  } 
 });
 
 export default LogoutScreen;
