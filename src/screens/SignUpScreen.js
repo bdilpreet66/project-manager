@@ -26,17 +26,17 @@ const Signup = ({navigation}) => {
     let passwordConfirmCheck = password === confirmPassword;
 
     if (!emailCheck.test(email)) {
-      alert("Please enter a valid email");
+      alert("Please enter a valid email.");
       return;
     }
 
     if (!passwordCheck) {
-      alert("Password should be at least 8 characters long");
+      alert("Password should be at least 8 characters long.");
       return;
     }
 
     if (!passwordConfirmCheck) {
-      alert("Passwords do not match");
+      alert("Passwords do not match.");
       return;
     }
 
@@ -44,13 +44,13 @@ const Signup = ({navigation}) => {
     let userExists = await searchUsers(email);
 
     if (userExists.length > 0) {
-      alert("User already exists");
+      alert("User already exists.");
       return;
     }
 
     // If validation passes and user doesn't exist, create user
-    await createUser(email, password, "admin", 0.0, ""); // Update the type and hourly_rate as per your requirements
-    alert("User created successfully");
+    await createUser(email, password, "admin", 0.0); // Update the type and hourly_rate as per your requirements
+    alert("User created successfully.");
 
     // Then redirect the user to the login screen or anywhere you want
     navigation.navigate("Login");
