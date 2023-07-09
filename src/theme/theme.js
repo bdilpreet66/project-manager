@@ -14,7 +14,7 @@ export default {
       large: 24,
     },
     fontWeight: {
-      bold: 500,
+      bold: 600,
       thin: 200,
       extra: 1000,
     }

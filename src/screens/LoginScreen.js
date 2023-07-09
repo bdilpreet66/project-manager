@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Image } from 'react-native';
 import theme from '../theme/theme';
+import commonStyles from '../theme/commonStyles';
 import { validateLogin } from "../store/user";
 import { saveUserData, clearUserData, getUserData } from "../store/creds"
 
@@ -58,20 +59,20 @@ const Login = ({navigation}) => {
   };  
 
   return (
-    <View style={styles.container}>
-      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} />
-      <Text style={styles.heading}>Login to AnTask</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Email</Text>
+    <View style={commonStyles.container}>
+      <Image source={require('../../assets/logo_icon.png')} style={commonStyles.logo} resizeMode='contain'/>
+      <Text style={commonStyles.heading}>Login to AnTask</Text>
+      <View style={commonStyles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Email</Text>
         <TextInput
-          style={styles.input}
+          style={commonStyles.input}
           onChangeText={setEmail}
           value={email}
           autoCapitalize='none'          
         />
       </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Password</Text>
+      <View style={commonStyles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
@@ -95,52 +96,17 @@ const Login = ({navigation}) => {
         />
         <Text style={styles.label}>Remember me</Text>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Log In</Text>
+      <TouchableOpacity style={commonStyles.buttonPrimary} onPress={handleLogin}>
+        <Text style={commonStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('SignUp')}>
-        <Text style={[styles.bold]}>Don't have an account? </Text><Text style={[styles.link,styles.bold]}>Get Started</Text>
+        <Text style={[commonStyles.bold]}>Don't have an account? </Text><Text style={[commonStyles.link,commonStyles.bold]}>Get Started</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: "100%",
-  },
-  logo: {
-    width: 58,
-    height: 46,
-    alignSelf: 'center', // Center the logo horizontally
-    marginTop: 64,
-    marginBottom: 20, // Add some spacing below the logo
-  },
-  heading: {
-    fontSize: theme.fontSize.large,
-    fontWeight: '600',
-    lineHeight: 27,
-    letterSpacing: 0,
-    textAlign: 'left',
-  },
-  inputContainer: {
-    width: '90%',  // Or any suitable value
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-  input: {
-    padding: 10,
-    height: 40,
-    borderColor: theme.colors.grey,
-    borderWidth: 1,
-    borderRadius: 5,
-    minWidth: "100%",
-    fontSize: theme.fontSize.small,
-  },
+const styles = StyleSheet.create({    
   passwordContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -152,8 +118,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   passwordInput: {
-    padding: 10,
-    height: 40,
+    paddingHorizontal: 12,    
+    paddingVertical: 10,
     minWidth: "88%"
   },
   iconContainer: {
@@ -166,8 +132,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     width: '90%',
-    justifyContent: "flex-start", 
-    marginBottom: 20,
+    justifyContent: "flex-start",     
   },
   checkbox: {
     alignSelf: "center",
@@ -178,34 +143,8 @@ const styles = StyleSheet.create({
     color: theme.colors.grey,
   },
   linkContainer: {
-    flexDirection: "row",
-    marginBottom: 20,    
-  },
-  link: {
-    color: theme.colors.link,    
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 5,
-    width: '90%', // Adjust width as per your requirement
-    alignSelf: 'center', // This will center the button
-  },
-  buttonText: {
-    color: theme.colors.white,
-    textAlign: 'center', // Center the text inside the button
-  },
-  inputLabel: {
-    fontWeight: 'bold',
-    marginBottom: 10,    
-  },
-  bold: {
-    fontWeight: '600',
-  },
-  grey: {
-    color: theme.colors.grey,
-  }
+    flexDirection: "row",    
+  },  
 });
 
 export default Login;

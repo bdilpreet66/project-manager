@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Image } from 'react-native';
 import theme from '../theme/theme';
+import commonStyles from '../theme/commonStyles';
 import { createUser, searchUsers } from "../store/user";
 
 const Signup = ({navigation}) => {
@@ -56,30 +57,26 @@ const Signup = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} />
-      <Text style={styles.heading}>Signup for AntTask</Text>
-      <View style={styles.inputContainer}>
-        <Text>Email</Text>
+    <View style={commonStyles.container}>
+      <Image source={require('../../assets/logo_icon.png')} style={commonStyles.logo} resizeMode='contain'/>
+      <Text style={commonStyles.heading}>Get started with ANTask</Text>
+      <View style={commonStyles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Email</Text>
         <TextInput
-          style={styles.input}
+          style={commonStyles.input}
           autoCapitalize='none'
           onChangeText={setEmail}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor={theme.colors.grey}
+          value={email}          
         />
       </View>
-      <View style={styles.inputContainer}>
-        <Text>Password</Text>
+      <View style={commonStyles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
             autoCapitalize='none'
             onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            placeholderTextColor={theme.colors.grey}
+            value={password}            
             secureTextEntry={hidePassword}
           />
           <TouchableOpacity style={styles.iconContainer} onPress={toggleHidePassword}>
@@ -90,16 +87,14 @@ const Signup = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.inputContainer}>
-        <Text>Confirm Password</Text>
+      <View style={commonStyles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Confirm Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
             autoCapitalize='none'
             onChangeText={setConfirmPassword}
-            value={confirmPassword}
-            placeholder="Confirm Password"
-            placeholderTextColor={theme.colors.grey}
+            value={confirmPassword}            
             secureTextEntry={hideConfirmPassword}
           />
           <TouchableOpacity style={styles.iconContainer} onPress={toggleHideConfirmPassword}>
@@ -110,52 +105,23 @@ const Signup = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity style={[commonStyles.buttonPrimary]} onPress={handleSignup}>
+        <Text style={commonStyles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('Login')}>
-        <Text>Already have an account? </Text><Text style={styles.link}>Login</Text>
+        <Text style={commonStyles.bold}>Already have an account? </Text><Text style={[commonStyles.link, commonStyles.bold]}>Login</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 // You can reuse the styles from Login component
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: "100%",
-  },
-  logo: {
-    width: 58,
-    height: 46,
-    alignSelf: 'center', // Center the logo horizontally
-    marginTop: 64,
-    marginBottom: 20, // Add some spacing below the logo
-  },
-  heading: {
-    fontSize: theme.fontSize.large,
-    fontWeight: '600',
-    lineHeight: 27,
-    letterSpacing: 0,
-    textAlign: 'left',
-  },
+const styles = StyleSheet.create({  
   inputContainer: {
     width: '90%',  // Or any suitable value
     alignSelf: 'center',
     marginTop: 20,
-  },
-  input: {
-    padding: 10,
-    height: 40,
-    borderColor: theme.colors.grey,
-    borderWidth: 1,
-    borderRadius: 5,
-    minWidth: "100%"
-  },
+  },  
   passwordContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -166,10 +132,11 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
   },
-  passwordInput: {
-    padding: 10,
-    height: 40,
-    minWidth: "88%"
+  passwordInput: {    
+    minWidth: "88%",
+    paddingHorizontal: 12,    
+    paddingVertical: 10,
+    fontSize: theme.fontWeight.medium,
   },
   iconContainer: {
     padding: 10,
@@ -177,31 +144,14 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,   // Or any other dimensions you want
     height: 16,
-  },
-  label: {
-    margin: 8,
-    alignSelf: 'center',
-  },
+  },  
   linkContainer: {
     flexDirection: "row",
     marginBottom: 20,
   },
-  link: {
-    color: theme.colors.link,
-  },
   button: {
-    backgroundColor: theme.colors.primary,
-    padding: 10,
     marginTop: 20,
-    marginBottom: 20,
-    borderRadius: 5,
-    width: '90%', // Adjust width as per your requirement
-    alignSelf: 'center', // This will center the button
-  },
-  buttonText: {
-    color: theme.colors.white,
-    textAlign: 'center', // Center the text inside the button
-  },
+  }
 });
 
 export default Signup;
