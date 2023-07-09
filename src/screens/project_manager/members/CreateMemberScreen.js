@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from "../../../store/creds";
 import { searchUsers, createUser } from "../../../store/user";
+import theme from '../../../theme/theme';
 
 const CreateMemberPage = () => {
   const navigation = useNavigation();
@@ -75,12 +76,12 @@ const CreateMemberPage = () => {
           alignItems: 'center',  
           marginTop: 30,
         }}>
-        <TouchableOpacity onPress={handleCancel}>
-          <Text>Cancel</Text>
+        <TouchableOpacity style={styles.buttons} onPress={handleCancel}>
+          <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
-        <Text>Create Member</Text>
-        <TouchableOpacity onPress={handleSave}>
-          <Text>Save</Text>
+        <Text style={styles.heading}>Create Member</Text>
+        <TouchableOpacity style={styles.buttons} onPress={handleSave}>
+          <Text style={styles.buttonText}>Create</Text>
         </TouchableOpacity>
       </View>
       <TextInput
@@ -108,7 +109,8 @@ const CreateMemberPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
+    paddingTop: 35,
     backgroundColor: '#fff',
   },
   heading: {
@@ -117,12 +119,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  buttons: {
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    lineHeight: 30,
+  },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: theme.colors.grey,
     borderRadius: 4,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 15,
   },
 });
 
