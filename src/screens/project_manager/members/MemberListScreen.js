@@ -45,7 +45,7 @@ const MemberListScreen = () => {
   };
 
   const renderItem = ({ item }) => (    
-    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('Edit Member', { item })}>
+    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('Edit Member', { user: item })}>
       <View style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -58,8 +58,7 @@ const MemberListScreen = () => {
         {user.type == "admin" ? 
         <Text style={[commonStyles.badge,commonStyles.badgeSuccess,styles.badge]}>{item.type}</Text> : 
         <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.type}</Text>
-        }
-        
+        }        
       </View>
     </TouchableOpacity>    
   );
