@@ -7,7 +7,7 @@ const CreateProjectScreen = () => {
 
   return (
     <View>
-      <Text>Create Project Screen</Text>
+      <Text>Create Project Screen</Text>      
     </View>
   );
 };

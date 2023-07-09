@@ -63,6 +63,7 @@ const Signup = ({navigation}) => {
         <Text>Email</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize='none'
           onChangeText={setEmail}
           value={email}
           placeholder="Email"
@@ -74,6 +75,7 @@ const Signup = ({navigation}) => {
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
+            autoCapitalize='none'
             onChangeText={setPassword}
             value={password}
             placeholder="Password"
@@ -93,6 +95,7 @@ const Signup = ({navigation}) => {
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
+            autoCapitalize='none'
             onChangeText={setConfirmPassword}
             value={confirmPassword}
             placeholder="Confirm Password"

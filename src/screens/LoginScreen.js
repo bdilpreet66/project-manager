@@ -10,22 +10,6 @@ const Login = ({navigation}) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [rememberMe, setRememberMe] = useState(false);
 
-  useEffect(() => {
-    checkLoggedInUser();
-  }, []);
-  
-  const checkLoggedInUser = async () => {
-    // Check if there is a logged-in user in AsyncStorage or any other storage mechanism
-    const user = await getUserData();
-
-    // Redirect to appropriate screen
-    if (user.type === 'admin') {
-      navigation.navigate('ProjectManagerTabs', { screen: "Dashboard"});
-    } else {
-      navigation.navigate('MemberTabs', { screen: "Dashboard"});
-    }
-  };
-
   const toggleHidePassword = () => {
     setHidePassword(!hidePassword);
   };
@@ -34,14 +18,14 @@ const Login = ({navigation}) => {
     // Email validation
     if (!email) {
       // Handle case when email is empty
-      alert('Please enter your email');
+      alert('Please enter your email.');
       return;
     }
   
     // Password validation
     if (!password) {
       // Handle case when password is empty
-      alert('Please enter your password');
+      alert('Please enter your password.');
       return;
     }
   
@@ -76,26 +60,24 @@ const Login = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Image source={require('../../assets/logo_icon.png')} style={styles.logo} />
-      <Text style={styles.heading}>Login to AntTask</Text>
+      <Text style={styles.heading}>Login to AnTask</Text>
       <View style={styles.inputContainer}>
-        <Text>Email</Text>
+        <Text style={styles.inputLabel}>Email</Text>
         <TextInput
           style={styles.input}
           onChangeText={setEmail}
           value={email}
-          placeholder="Email"
-          placeholderTextColor={theme.colors.grey}
+          autoCapitalize='none'          
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text>Password</Text>
+        <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
+            autoCapitalize='none'
             onChangeText={setPassword}
-            value={password}
-            placeholder="Password"
-            placeholderTextColor={theme.colors.grey}
+            value={password}            
             secureTextEntry={hidePassword}
           />
           <TouchableOpacity style={styles.iconContainer} onPress={toggleHidePassword}>
@@ -117,7 +99,7 @@ const Login = ({navigation}) => {
         <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('SignUp')}>
-        <Text>Don't have an account? </Text><Text style={styles.link}>Signup</Text>
+        <Text style={[styles.bold]}>Don't have an account? </Text><Text style={[styles.link,styles.bold]}>Get Started</Text>
       </TouchableOpacity>
     </View>
   );
@@ -156,7 +138,8 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.grey,
     borderWidth: 1,
     borderRadius: 5,
-    minWidth: "100%"
+    minWidth: "100%",
+    fontSize: theme.fontSize.small,
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -192,13 +175,14 @@ const styles = StyleSheet.create({
   label: {
     margin: 8,
     alignSelf: 'center',
+    color: theme.colors.grey,
   },
   linkContainer: {
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: 20,    
   },
   link: {
-    color: theme.colors.link,
+    color: theme.colors.link,    
   },
   button: {
     backgroundColor: theme.colors.primary,
@@ -212,6 +196,16 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     textAlign: 'center', // Center the text inside the button
   },
+  inputLabel: {
+    fontWeight: 'bold',
+    marginBottom: 10,    
+  },
+  bold: {
+    fontWeight: '600',
+  },
+  grey: {
+    color: theme.colors.grey,
+  }
 });
 
 export default Login;
