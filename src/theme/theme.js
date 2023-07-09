@@ -5,8 +5,9 @@ export default {
       secondary: '#4ecdc4',
       black: '#000',
       white: '#fff',
-      grey: "#5e5e5e",
-      link: "#105DA5"
+      grey: '#5e5e5e',
+      link: '#105DA5',
+      red: '#F7BBBD'
     },
     fontSize: {
       small: 14,
