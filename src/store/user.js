@@ -10,9 +10,18 @@ export const createUser = async (email, password, type, hourly_rate, created_by)
     }
 };
 
-export const updateUser = async (email, password, type, hourly_rate) => {
+export const updateHours = async (email, hourly_rate) => {
     try {
-        await executeSql('UPDATE Users SET password = ?, type = ?, hourly_rate = ? WHERE email = ?', [password, type, hourly_rate, email]);
+        await executeSql('UPDATE Users SET hourly_rate = ? WHERE email = ?', [hourly_rate, email]);
+    } catch (error) {
+        console.error("Error updating user: ", error);
+        throw error;
+    }
+};
+
+export const updatePassword = async (email, password) => {
+    try {
+        await executeSql('UPDATE Users SET password = ? WHERE email = ?', [password, email]);
     } catch (error) {
         console.error("Error updating user: ", error);
         throw error;

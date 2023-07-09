@@ -42,7 +42,7 @@ const MemberListScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Edit Member', { item })}>
+    <TouchableOpacity onPress={() => navigation.navigate('Edit Member', { user: item })}>
       <View>
         <Text>Email: {item.email}</Text>
         <Text>Hourly Rate: {item.hourly_rate}</Text>

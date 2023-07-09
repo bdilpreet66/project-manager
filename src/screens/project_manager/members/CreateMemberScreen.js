@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from "../../../store/creds";
-import { searchUsers, createUser } from "../../../store/user"
+import { searchUsers, createUser } from "../../../store/user";
 
 const CreateMemberPage = () => {
   const navigation = useNavigation();
@@ -46,7 +46,7 @@ const CreateMemberPage = () => {
     user = await getUserData();
 
     // If validation passes and user doesn't exist, create user
-    await createUser(email, password, "admin", 0.0, user.email); // Update the type and hourly_rate as per your requirements
+    await createUser(email, password, "regular", parseFloat(hourlyRate), user.email); // Update the type and hourly_rate as per your requirements
 
     // Then redirect the user to the login screen or anywhere you want
     handleCancel();
