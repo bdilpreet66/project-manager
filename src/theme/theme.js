@@ -7,7 +7,10 @@ export default {
       white: '#fff',
       grey: '#5e5e5e',
       link: '#105DA5',
-      red: '#F7BBBD'
+      red: '#F7BBBD',
+      info: '#2DA7CA',
+      warning: '#E5B164',
+      success: '#34A654',
     },
     fontSize: {
       small: 14,

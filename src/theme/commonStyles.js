@@ -77,5 +77,25 @@ export default {
   },
   link: {
     color: theme.colors.primary,
+  },
+  badge: {
+    borderRadius: 20,
+    padding: 8,
+    color: theme.colors.white,    
+  },
+  badgeDefault: {
+    backgroundColor: theme.colors.black,
+  },
+  badgeError: {
+    backgroundColor: theme.colors.red,
+  },
+  badgeInfo: {
+    backgroundColor: theme.colors.info,
+  },
+  badgeWarning: {
+    backgroundColor: theme.colors.warning,
+  },
+  badgeSuccess: {
+    backgroundColor: theme.colors.success,
   }
 }

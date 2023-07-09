@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { listUsers } from '../../../store/user'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
@@ -11,6 +11,8 @@ const MemberListScreen = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+
+  const screenWidth = Dimensions.get('window').width - 40;
 
   useEffect(() => {
     loadMembers();
@@ -42,14 +44,24 @@ const MemberListScreen = () => {
     loadMembers();
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Edit Member', { item })}>
-      <View>
-        <Text>Email: {item.email}</Text>
-        <Text>Hourly Rate: {item.hourly_rate}</Text>
-        <Text>User Type: {item.type}</Text>
+  const renderItem = ({ item }) => (    
+    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('Edit Member', { item })}>
+      <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+      }}>
+        <Text>{item.email}</Text>
+        <Text>Hourly Rate: ${item.hourly_rate}</Text>
       </View>
-    </TouchableOpacity>
+      <View>
+        {user.type == "admin" ? 
+        <Text style={[commonStyles.badge,commonStyles.badgeSuccess,styles.badge]}>{item.type}</Text> : 
+        <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.type}</Text>
+        }
+        
+      </View>
+    </TouchableOpacity>    
   );
 
   const renderFooter = () => {
@@ -63,11 +75,11 @@ const MemberListScreen = () => {
       <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
       <Text style={commonStyles.heading}>Member Management</Text>
       <Text>Create and modify your team member</Text>      
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary]} onPress={() => navigation.navigate('Create Member')}>
+      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Member')}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Member</Text>
       </TouchableOpacity>
       <TextInput
-        style={commonStyles.input}        
+        style={[commonStyles.input, styles.search]}        
         placeholder="Search by email"
         value={searchText}
         onChangeText={text => {
@@ -89,13 +101,27 @@ const MemberListScreen = () => {
 
 const styles = StyleSheet.create({  
   container: {    
-    alignItems: 'flex-start',
-    //width: '100%',
+    alignItems: 'flex-start',    
     padding: 20,
   },  
-  content: {
-    //padding: 20
-  }
+  button: {
+    marginTop: 20,
+    marginBottom: 20,   
+  },
+  search: {
+    marginBottom: 10,
+  },
+  listItem: {
+    backgroundColor: '#F8F8F8', 
+    padding: 10, 
+    borderRadius: 5, 
+    marginTop: 10, 
+  },
+  badge: {    
+    width: 85,
+    textAlign: 'center',
+    marginTop: 5,    
+  },
 });
 
 export default MemberListScreen;
