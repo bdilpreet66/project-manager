@@ -20,7 +20,7 @@ export default {
     height: 50,
     alignSelf: 'center',    
     marginTop: 40,
-    marginBottom: 20,
+    marginBottom: 28,
   },
   heading: {
     fontSize: theme.fontSize.large,
