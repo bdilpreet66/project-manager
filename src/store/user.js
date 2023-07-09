@@ -27,13 +27,36 @@ export const deleteUser = async (email) => {
     }
 };
 
-export const listUsers = async () => {
+export const listUsers = async (page, searchText) => {
     try {
-        const users = await executeSql('SELECT * FROM Users');
-        return users;
+      // Assuming you have a table named 'Users' with columns: id, email, hourly_rate, type
+      const offset = (page - 1) * 10; // Assuming each page shows 10 users
+      const limit = 10; // Number of users to fetch per page
+  
+      let query = 'SELECT * FROM Users';
+      let params = [];
+  
+      if (searchText) {
+        query += ' WHERE email LIKE ?'; // Assuming you want to search by email
+        params.push(`%${searchText}%`);
+      }
+  
+      query += ' ORDER BY email DESC'; // Assuming you want to order by the user ID in descending order
+      query += ` LIMIT ${limit} OFFSET ${offset}`;
+  
+      const results = await executeSql(query, params); // Execute the SQL query with parameters
+  
+      // Format the results as needed, assuming each result row is an object with properties matching the table columns
+      const users = results.map((row) => ({
+        email: row.email,
+        hourly_rate: row.hourly_rate,
+        type: row.type,
+      }));
+  
+      return users;
     } catch (error) {
-        console.error("Error listing users: ", error);
-        throw error;
+      console.error('Error listing users:', error);
+      throw error;
     }
 };
 
