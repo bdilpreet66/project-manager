@@ -54,7 +54,7 @@ const Login = ({navigation}) => {
   return (
     <View style={commonStyles.container}>
       <Image source={require('../../assets/logo_icon.png')} style={commonStyles.logo} resizeMode='contain'/>
-      <Text style={commonStyles.heading}>Login to AnTask</Text>
+      <Text style={commonStyles.heading}>Login to ANTask</Text>
       <View style={commonStyles.inputContainer}>
         <Text style={commonStyles.inputLabel}>Email</Text>
         <TextInput
@@ -78,7 +78,7 @@ const Login = ({navigation}) => {
           <TouchableOpacity style={styles.iconContainer} onPress={toggleHidePassword}>
             <Image 
               source={hidePassword ? require('../../assets/eye-closed.png') : require('../../assets/eye-open.png')} 
-              style={styles.icon} 
+              style={styles.icon}               
             />
           </TouchableOpacity>
         </View>
@@ -90,7 +90,7 @@ const Login = ({navigation}) => {
         />
         <Text style={styles.label}>Remember me</Text>
       </View>
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary]} onPress={handleLogin}>
+      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary, styles.button]} onPress={handleLogin}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('SignUp')}>
@@ -119,9 +119,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     padding: 10,
   },
-  icon: {
-    width: 20,   // Or any other dimensions you want
-    height: 16,
+  icon: {    
+    width: 20,
+    height: 15,
+    alignSelf: 'center', 
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -138,7 +139,10 @@ const styles = StyleSheet.create({
   },
   linkContainer: {
     flexDirection: "row",    
-  },  
+  },
+  button: {
+    width: '90%',
+  }  
 });
 
 export default Login;
