@@ -37,12 +37,30 @@ const MemberListScreen = () => {
     setLoading(false);
   };
 
+  const initLoadMembers = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+
+    try {
+      const users = await listUsers(1, searchText); // Fetch members using the 'listUsers' function
+
+      setMembers((prevMembers) => [...prevMembers, ...users]);
+      setHasMore(users.length > 0);
+      setPage(2);
+    } catch (error) {
+      console.error('Error loading members:', error);
+    }
+
+    setLoading(false);
+  };
+
   const handleSearch = async () => {
     // Reset pagination and load members based on the search text
-    setPage();
+    setPage(1);
     setMembers([]);
     setHasMore(true);
-    loadMembers();
+    initLoadMembers();
   };
 
   const renderItem = ({ item }) => (    
