@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation,useRoute } from '@react-navigation/native';
-import { updateHours, updatePassword } from "../../../store/user"
+import { updateHours, updatePassword, deleteUser } from "../../../store/user";
+import theme from '../../../theme/theme';
+import commonStyles from '../../../theme/commonStyles';
 
 const EditMemberScreen = () => {
   const route = useRoute();
@@ -9,7 +11,7 @@ const EditMemberScreen = () => {
   const navigation = useNavigation();
   const [hours, setHours] = useState('');
   const [password, setPassword] = useState('');
-  const [isHoursExpanded, setIsHoursExpanded] = useState(false);
+  const [isHoursExpanded, setIsHoursExpanded] = useState(true);
   const [isPasswordExpanded, setIsPasswordExpanded] = useState(false);
 
   const handleCancel = () => {
@@ -51,6 +53,12 @@ const EditMemberScreen = () => {
     // Then redirect the user to the login screen or anywhere you want
     handleCancel();
   };
+
+  const handleDeleteUser = async () => {
+    await deleteUser(user.email);
+
+    handleCancel();
+  }
   
   const isValidHourlyRate = (hourlyRate) => {
     // Hourly rate validation logic
@@ -60,49 +68,97 @@ const EditMemberScreen = () => {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: "center"}}>
-      <Text>Edit {user.email}</Text>
-
-      {/* Set Hours Section */}
+    <View style={styles.container}>
+      <Text style={styles.heading}>Edit Members</Text>
       <View>
-        <Button
-          title={isHoursExpanded ? 'Hide Hours' : 'Set Hours'}
-          onPress={() => setIsHoursExpanded(!isHoursExpanded)}
-        />
+
+        <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(!isHoursExpanded); setIsPasswordExpanded(false); } }>
+            <Text style={styles.tabText}>{isHoursExpanded ? 'Hide Hourly Rate' : 'Set Hourly Rate'}</Text>
+        </TouchableOpacity>
         {isHoursExpanded && (
           <View>
             <TextInput
-              style={{ marginBottom: 10, padding: 10, borderWidth: 1, borderColor: '#ccc' }}
+              style={styles.input}
               placeholder="Hours"
               value={hours}
               onChangeText={setHours}
             />
-            <Button title="Save Hours" onPress={handleSetHours} />
+            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleSetHours}>
+              <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Save Rate</Text>
+            </TouchableOpacity>
           </View>
         )}
       </View>
 
       {/* Change Password Section */}
       <View>
-        <Button
-          title={isPasswordExpanded ? 'Hide Password' : 'Change Password'}
-          onPress={() => setIsPasswordExpanded(!isPasswordExpanded)}
-        />
+        <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(false); setIsPasswordExpanded(!isPasswordExpanded); } }>
+            <Text style={styles.tabText}>{isPasswordExpanded ? 'Hide Password' : 'Change Password'}</Text>
+        </TouchableOpacity>
         {isPasswordExpanded && (
           <View>
             <TextInput
-              style={{ marginBottom: 10, padding: 10, borderWidth: 1, borderColor: '#ccc' }}
+              style={styles.input}
               placeholder="New Password"
               secureTextEntry={true}
               value={password}
               onChangeText={setPassword}
             />
-            <Button title="Change Password" onPress={handleChangePassword} />
+            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleChangePassword}>
+              <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Change Password</Text>
+            </TouchableOpacity>
           </View>
         )}
       </View>
+      {user.type != "admin" &&
+        (
+          <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.deleteButton]} onPress={handleDeleteUser}>
+            <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete User</Text>
+          </TouchableOpacity>
+        )
+      }
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    paddingTop: 50,
+    backgroundColor: '#fff',
+    height: "100%",
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  tabs: {
+    marginTop: 30,
+    backgroundColor: theme.colors.greyBackground,
+    padding: 20,
+  },
+  tabText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  input: {
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: theme.colors.grey,
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 15,
+  },
+  buttonOverride: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  deleteButton: {
+    bottom: 10
+  }
+});
 
 export default EditMemberScreen;

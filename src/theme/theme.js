@@ -6,6 +6,7 @@ export default {
       black: '#000',
       white: '#fff',
       grey: '#5e5e5e',
+      greyBackground: '#F8F8F8',
       link: '#105DA5',
       red: '#F7BBBD',
       info: '#2DA7CA',
