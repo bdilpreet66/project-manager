@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Image } fr
 import theme from '../theme/theme';
 import commonStyles from '../theme/commonStyles';
 import { validateLogin } from "../store/user";
-import { saveUserData, clearUserData, getUserData } from "../store/creds"
+import { saveUserData, clearUserData} from "../store/creds"
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState("");
@@ -68,7 +68,8 @@ const Login = ({navigation}) => {
           style={commonStyles.input}
           onChangeText={setEmail}
           value={email}
-          autoCapitalize='none'          
+          autoCapitalize='none'
+          keyboardType='email-address'          
         />
       </View>
       <View style={commonStyles.inputContainer}>
@@ -96,8 +97,8 @@ const Login = ({navigation}) => {
         />
         <Text style={styles.label}>Remember me</Text>
       </View>
-      <TouchableOpacity style={commonStyles.buttonPrimary} onPress={handleLogin}>
-        <Text style={commonStyles.buttonText}>Log In</Text>
+      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary]} onPress={handleLogin}>
+        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Log In</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('SignUp')}>
         <Text style={[commonStyles.bold]}>Don't have an account? </Text><Text style={[commonStyles.link,commonStyles.bold]}>Get Started</Text>

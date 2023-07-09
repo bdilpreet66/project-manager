@@ -66,7 +66,8 @@ const Signup = ({navigation}) => {
           style={commonStyles.input}
           autoCapitalize='none'
           onChangeText={setEmail}
-          value={email}          
+          value={email}
+          keyboardType='email-address'          
         />
       </View>
       <View style={commonStyles.inputContainer}>
@@ -105,8 +106,8 @@ const Signup = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={[commonStyles.buttonPrimary]} onPress={handleSignup}>
-        <Text style={commonStyles.buttonText}>Sign Up</Text>
+      <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary]} onPress={handleSignup}>
+        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('Login')}>
         <Text style={commonStyles.bold}>Already have an account? </Text><Text style={[commonStyles.link, commonStyles.bold]}>Login</Text>

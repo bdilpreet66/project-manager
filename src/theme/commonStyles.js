@@ -15,6 +15,12 @@ export default {
     marginTop: 64,
     marginBottom: 20,
   },
+  logoLabel: {
+    width: 84 * 2,
+    height: 90 * 2,
+    alignSelf: 'center',     
+    marginBottom: 20,
+  },
   heading: {
     fontSize: theme.fontSize.large,
     fontWeight: '600',
@@ -22,8 +28,7 @@ export default {
     letterSpacing: 0,
     textAlign: 'left',
   },
-  buttonPrimary: {
-    backgroundColor: theme.colors.primary,    
+  button: {    
     borderRadius: 5,
     width: '90%', // Adjust width as per your requirement
     alignSelf: 'center', // This will center the button
@@ -32,10 +37,21 @@ export default {
     marginTop: 40,
     marginBottom: 40,
   },
-  buttonText: {
-    color: theme.colors.white,
+  buttonPrimary: {
+    backgroundColor: theme.colors.primary,
+  },
+  buttonError: {
+    backgroundColor: theme.colors.red,    
+  },
+  buttonText: {    
     textAlign: 'center', // Center the text inside the button
     fontWeight: theme.fontWeight.bold,
+  },
+  buttonTextPrimary: {
+    color: theme.colors.white,
+  },
+  buttonTexError: {
+    color: '#D85151',
   },
   inputContainer: {
     width: '90%',  // Or any suitable value
