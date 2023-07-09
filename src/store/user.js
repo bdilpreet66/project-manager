@@ -40,21 +40,24 @@ export const listUsers = async (page, searchText) => {
       user = await getUserData();
   
       if (searchText) {
-        query += ` WHERE created_by = '${user.email}' OR email = '${user.email}' AND email LIKE '%${searchText}%'`; // Assuming you want to search by email
+        query += ` WHERE created_by = '${user.email}' AND Lower(email) LIKE '%${searchText.toLowerCase()}%'`; // Assuming you want to search by email
       } else {
-        query += ` WHERE created_by = '${user.email}' OR email = '${user.email}'`
+        query += ` WHERE email = '${user.email}' OR created_by = '${user.email}'`
       }
   
       query += ' ORDER BY email DESC'; // Assuming you want to order by the user ID in descending order
       query += ` LIMIT ${limit} OFFSET ${offset}`;
 
+      console.log(query)
       const results = await executeSql(query, params); // Execute the SQL query with parameters
+      console.log(results)
   
       // Format the results as needed, assuming each result row is an object with properties matching the table columns
       const users = results.map((row) => ({
         email: row.email,
         hourly_rate: row.hourly_rate,
         type: row.type,
+        created_by: row.created_by,
       }));
   
       return users;

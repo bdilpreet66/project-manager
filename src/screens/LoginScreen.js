@@ -35,16 +35,7 @@ const Login = ({navigation}) => {
     
     if (user.success) {
         // Save user details if rememberMe is true
-        if (rememberMe) {
-          try {
-            await saveUserData({ email: user.data.email, password: user.data.password, type: user.data.type });
-          } catch (error) { }
-        } else {
-          // Clear user details from AsyncStorage
-          try {
-            await clearUserData();
-          } catch (error) { }
-        }
+        await saveUserData({ email: user.data.email, password: user.data.password, type: user.data.type });
 
         console.log(user)
         if (user.data.type === 'admin') {

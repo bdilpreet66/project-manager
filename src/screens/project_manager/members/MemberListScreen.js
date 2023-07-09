@@ -66,10 +66,9 @@ const MemberListScreen = () => {
           style={{ marginBottom: 10, padding: 10, borderWidth: 1, borderColor: '#ccc' }}
           placeholder="Search Members"
           value={searchText}
-          onChangeText={text => {
-            setSearchText(text);
-            handleSearch();
-          }}
+          onChangeText={ setSearchText }
+          onSubmitEditing={ handleSearch }
+          returnKeyType="search"
         />
       <Button title="Create Member" onPress={() => navigation.navigate('Create Member')} />
       <FlatList
