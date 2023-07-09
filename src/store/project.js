@@ -1,4 +1,4 @@
-import { executeSql, initializeDB } from './storage';
+import { executeSql } from './storage';
 import { getUserData } from './creds';
 
 export const listProjects = async (page, searchText) => {
@@ -32,8 +32,9 @@ export const listProjects = async (page, searchText) => {
         name: row.name,
         description: row.description,
         total_hours_worked: row.total_hours_worked,
-        completion_date: row.completion_date,
+        completion_date: (row.completion_date === null) ? "" : row.completion_date,
         created_by: row.created_by,
+        status: row.status,
       }));
   
       return projects;
@@ -41,4 +42,21 @@ export const listProjects = async (page, searchText) => {
       console.error('Error listing projects:', error);
       throw error;
     }
+};
+
+
+export const addProject = async (name, description) => {
+  try {
+    const user = await getUserData(); 
+
+    let query = `INSERT INTO Projects (name, description, created_by) VALUES ('${name}','${description}','${user.email}')`;
+    let params = [];    
+    
+    console.log('Project Add Query: ' + query);
+    const results = await executeSql(query, params); // Execute the SQL query with parameters
+    return results;
+  } catch (error) {
+    console.error('Error adding project:', error);
+    throw error;
+  }
 };

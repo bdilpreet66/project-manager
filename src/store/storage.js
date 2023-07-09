@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('projectManagerDBv1.0.db');
+const db = SQLite.openDatabase('projectManagerDBv1.1.db');
 
 export const executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>
@@ -27,8 +27,9 @@ export const initializeDB = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT,
-        total_hours_worked INTEGER DEFAULT 0,
-        completion_date TEXT,
+        total_cost FLOAT DEFAULT 0,
+        status TEXT DEFAULT 'pending',
+        completion_date TEXT DEFAULT '',
         created_by TEXT,
         FOREIGN KEY (created_by) REFERENCES Users (email) ON DELETE SET NULL
     )`);

@@ -74,7 +74,7 @@ const MemberListScreen = () => {
         <Text>Hourly Rate - ${item.hourly_rate}</Text>
       </View>
       <View>
-        {user.type == "admin" ? 
+        {item.type == "admin" ? 
         <Text style={[commonStyles.badge,commonStyles.badgeSuccess,styles.badge]}>{item.type}</Text> : 
         <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.type}</Text>
         }        

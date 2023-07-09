@@ -64,22 +64,25 @@ const ProjectListScreen = () => {
   };
 
   const renderItem = ({ item }) => (    
-    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('Edit Member', { user: item })}>
+    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('View Project', { project: item })}>
       <View style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
       }}>
-        <Text>{item.email}</Text>
-        <Text>Hourly Rate - ${item.hourly_rate}</Text>
+        <Text>{item.id}# {item.name}</Text>
+        {item.status == "complete" ? 
+          <Text>Completed: {item.completion_date}</Text> : 
+          <Text>Incomplete</Text>
+        }
       </View>
       <View>
-        {user.type == "admin" ? 
-        <Text style={[commonStyles.badge,commonStyles.badgeSuccess,styles.badge]}>{item.type}</Text> : 
-        <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.type}</Text>
+        {item.status == "pending" ? 
+        <Text style={[commonStyles.badge,commonStyles.badgeWarning,styles.badge]}>{item.status}</Text> : 
+        <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.status}</Text>
         }        
       </View>
-    </TouchableOpacity>    
+    </TouchableOpacity>
   );
 
   const renderFooter = () => {
@@ -107,7 +110,7 @@ const ProjectListScreen = () => {
       <FlatList
         data={projects}
         renderItem={renderItem}
-        keyExtractor={(item) => item.email.toString()} // Assuming each member has a unique ID
+        keyExtractor={(item) => item.id.toString()} // Assuming each member has a unique ID
         onEndReached={loadProjects} // Load more projects when reaching the end of the list
         onEndReachedThreshold={0.1} // Trigger the onEndReached callback when 10% of the list is reached
         ListFooterComponent={renderFooter} // Show loading indicator at the bottom while loading more projects
