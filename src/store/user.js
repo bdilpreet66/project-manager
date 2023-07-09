@@ -1,8 +1,9 @@
 import { executeSql, initializeDB } from './storage';
+import { getUserData } from './creds';
 
-export const createUser = async (email, password, type, hourly_rate) => {
+export const createUser = async (email, password, type, hourly_rate, created_by) => {
     try {
-        await executeSql('INSERT INTO Users (email, password, type, hourly_rate) VALUES (?, ?, ?, ?)', [email, password, type, hourly_rate]);
+        await executeSql('INSERT INTO Users (email, password, type, hourly_rate, created_by) VALUES (?, ?, ?, ?, ?)', [email, password, type, hourly_rate, created_by]);
     } catch (error) {
         console.error("Error creating user: ", error);
         throw error;
@@ -35,15 +36,18 @@ export const listUsers = async (page, searchText) => {
   
       let query = 'SELECT * FROM Users';
       let params = [];
+
+      user = await getUserData();
   
       if (searchText) {
-        query += ' WHERE email LIKE ?'; // Assuming you want to search by email
-        params.push(`%${searchText}%`);
+        query += ` WHERE created_by = '${user.email}' OR email = '${user.email}' AND email LIKE '%${searchText}%'`; // Assuming you want to search by email
+      } else {
+        query += ` WHERE created_by = '${user.email}' OR email = '${user.email}'`
       }
   
       query += ' ORDER BY email DESC'; // Assuming you want to order by the user ID in descending order
       query += ` LIMIT ${limit} OFFSET ${offset}`;
-  
+
       const results = await executeSql(query, params); // Execute the SQL query with parameters
   
       // Format the results as needed, assuming each result row is an object with properties matching the table columns

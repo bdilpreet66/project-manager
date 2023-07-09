@@ -49,7 +49,7 @@ const Signup = ({navigation}) => {
     }
 
     // If validation passes and user doesn't exist, create user
-    await createUser(email, password, "admin", 0.0); // Update the type and hourly_rate as per your requirements
+    await createUser(email, password, "admin", 0.0, ""); // Update the type and hourly_rate as per your requirements
     alert("User created successfully");
 
     // Then redirect the user to the login screen or anywhere you want

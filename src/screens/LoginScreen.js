@@ -34,24 +34,26 @@ const Login = ({navigation}) => {
     const user = await validateLogin(email, password);
     
     if (user.success) {
-      // Save user details if rememberMe is true
-      if (rememberMe) {
-        try {
-          await saveUserData({ email: user.data.email, password: user.data.password, type: user.data.type });
-        } catch (error) { }
-      } else {
-        // Clear user details from AsyncStorage
-        try {
-          await clearUserData();
-        } catch (error) { }
-      }
-  
-      // Redirect to appropriate screen
-      if (user.type === 'admin') {
-        navigation.navigate('ProjectManagerTabs');
-      } else {
-        navigation.navigate('MemberTabs');
-      }
+        // Save user details if rememberMe is true
+        if (rememberMe) {
+          try {
+            await saveUserData({ email: user.data.email, password: user.data.password, type: user.data.type });
+          } catch (error) { }
+        } else {
+          // Clear user details from AsyncStorage
+          try {
+            await clearUserData();
+          } catch (error) { }
+        }
+
+        console.log(user)
+        if (user.data.type === 'admin') {
+          console.log(user.type)
+          navigation.navigate('ProjectManagerTabs', { screen: "Dashboard"});
+        } else {
+          console.log("incorrect")
+          navigation.navigate('MemberTabs', { screen: "Dashboard"});
+        }
     } else {
       // Handle case when login validation fails
       alert(user.message);

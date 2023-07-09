@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { listUsers } from '../../../store/user'; // Assuming you have the user functions in a file named 'user.js'
-import { Ionicons } from '@expo/vector-icons';
 
 const MemberListScreen = () => {
   const navigation = useNavigation();
