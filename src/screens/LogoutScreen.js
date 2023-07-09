@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import Text from '../custom/Text';
 import { useNavigation } from '@react-navigation/native';
 import { clearUserData} from "../store/creds"
 import commonStyles from '../theme/commonStyles';

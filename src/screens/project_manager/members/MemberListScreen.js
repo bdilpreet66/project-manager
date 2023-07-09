@@ -4,13 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import { listUsers } from '../../../store/user'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 
+
 const MemberListScreen = () => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);  
 
   const screenWidth = Dimensions.get('window').width - 40;
 
@@ -38,9 +39,9 @@ const MemberListScreen = () => {
 
   const handleSearch = async () => {
     // Reset pagination and load members based on the search text
+    setPage();
     setMembers([]);
     setHasMore(true);
-    setPage(1);
     loadMembers();
   };
 
@@ -52,7 +53,7 @@ const MemberListScreen = () => {
           alignItems: 'center',
       }}>
         <Text>{item.email}</Text>
-        <Text>Hourly Rate: ${item.hourly_rate}</Text>
+        <Text>Hourly Rate - ${item.hourly_rate}</Text>
       </View>
       <View>
         {user.type == "admin" ? 
@@ -81,10 +82,9 @@ const MemberListScreen = () => {
         style={[commonStyles.input, styles.search]}        
         placeholder="Search by email"
         value={searchText}
-        onChangeText={text => {
-          setSearchText(text);
-          handleSearch();
-        }}        
+        onChangeText={ setSearchText }
+        onSubmitEditing={ handleSearch }
+        returnKeyType="search"      
       />  
       <FlatList
         data={members}

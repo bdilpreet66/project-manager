@@ -39,7 +39,6 @@ export const deleteUser = async (email) => {
 
 export const listUsers = async (page, searchText) => {
     try {
-      // Assuming you have a table named 'Users' with columns: id, email, hourly_rate, type
       const offset = (page - 1) * 10; // Assuming each page shows 10 users
       const limit = 10; // Number of users to fetch per page
   
