@@ -41,8 +41,8 @@ const CreateTaskScreen = () => {
       return;
     }
 
-    if (startDate >= endDate) {
-      alert('Error', 'Start date should be before end date.');
+    if (startDate > endDate) {
+      alert('Start date should be before end date.');
       return;
     }
     console.log("go")
@@ -67,7 +67,7 @@ const CreateTaskScreen = () => {
     } catch (error) {
       // Handle or display error if something goes wrong
       console.error(error);
-      alert('Error', 'There was an error while creating the task.');
+      alert('There was an error while creating the task.');
     }
   }
 

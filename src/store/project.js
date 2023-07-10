@@ -212,15 +212,7 @@ export const getWorkHistoryByProjectId = async (projectId) => {
       let params = [projectId];
 
       const results = await executeSql(query, params);
-
-      /*let workHistory = [];
-
-      if (results.rows.length > 0) {
-          for (let i = 0; i < results.rows.length; i++) {
-              workHistory.push(results.rows.item(i));
-          }
-      }*/
-      
+            
       return results;
   } catch (error) {
       console.error('Error retrieving work history:', error);
@@ -271,6 +263,41 @@ export const deletePrerequisite = async (taskId, prerequisiteTaskId) => {
     console.log(`Prerequisite deleted: Task ${prerequisiteTaskId} is no longer a prerequisite for Task ${taskId}`);
   } catch (error) {
     console.error('Error deleting prerequisite:', error);
+    throw error;
+  }
+};
+
+
+export const getTaskComments = async (taskId) => {
+  try {    
+    let query = `SELECT * FROM TaskComments WHERE task_id = ${taskId} ORDER BY id DESC`;    
+    
+    console.log('Task Comments Get Query: ' + query);
+    const results = await executeSql(query, []); // Execute the SQL query with parameters
+
+    return results;
+    
+  } catch (error) {
+    console.error('Error retrieving task comments:', error);
+    throw error;
+  }
+};
+
+export const addTaskComment = async (comment,taskid) => {
+  try {
+    user = await getUserData();
+
+    let query = `
+      INSERT INTO TaskComments (task_id, comment, comment_date, commented_by) 
+      VALUES (?, ?, datetime('now'), ?)
+    `;
+    let params = [taskid, comment, user.email];
+    
+    console.log('Task Comment Insert Query: ' + query);
+    await executeSql(query, params); // Execute the SQL query with parameters
+    
+  } catch (error) {
+    console.error('Error inserting task comment:', error);
     throw error;
   }
 };
