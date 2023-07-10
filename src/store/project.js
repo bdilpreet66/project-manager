@@ -252,7 +252,7 @@ export const listPrerequisite = async (taskId) => {
     // Format the results as needed, assuming each result row is an object with properties matching the table columns
     let tasks = results.map((row) => ({
       id: row.id,
-      name: row.name,
+      prerequisite_task_id: row.prerequisite_task_id,
     }));
 
     return tasks;

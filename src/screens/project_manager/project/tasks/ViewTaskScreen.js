@@ -229,7 +229,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Prerequisite</Text>        
             </View>            
             <View style={[styles.staticContent]}>
-              {preReq.map((item) => <Text style={[commonStyles.inputLabel]}>{item.name}</Text>)}
+              {preReq.map((item) => <Text style={[commonStyles.button, commonStyles.buttonGray]}>#{item.prerequisite_task_id}</Text>)}
               <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { project, task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
               </TouchableOpacity>            

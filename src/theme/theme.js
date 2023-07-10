@@ -11,7 +11,7 @@ export default {
       red: '#F7BBBD',
       info: '#2DA7CA',
       warning: '#E5B164',
-      success: '#34A654',
+      success: '#34A654',      
     },
     fontSize: {
       small: 14,

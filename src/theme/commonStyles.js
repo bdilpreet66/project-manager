@@ -41,6 +41,9 @@ export default {
   buttonPrimary: {
     backgroundColor: theme.colors.primary,
   },
+  buttonGray: {
+    backgroundColor: theme.colors.grey,
+  },
   buttonError: {
     backgroundColor: theme.colors.red,    
   },
