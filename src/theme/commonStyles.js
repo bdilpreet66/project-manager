@@ -41,6 +41,12 @@ export default {
   buttonPrimary: {
     backgroundColor: theme.colors.primary,
   },
+  buttonSuccess: {
+    backgroundColor: theme.colors.success,
+  },
+  buttonDanger: {
+    backgroundColor: theme.colors.warning,
+  },
   buttonGray: {
     backgroundColor: theme.colors.grey,
   },
