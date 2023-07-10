@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Platform, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser } from '../../../../store/user';
-import { updateTask } from '../../../../store/project';
+import { updateTask, listPrerequisite } from '../../../../store/project';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -24,16 +24,26 @@ const ViewTaskScreen = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [users, setUsers] = useState([]);
+  const [preReq, setRreReq] = useState([]);
 
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const fetchedUsers = await getAvailableUser();
-      setUsers(fetchedUsers);
-    };
 
-    fetchUsers();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchPreReq = async () => {
+        const results = await listPrerequisite(task.id);
+        setRreReq(results);
+      };
+
+      const fetchUsers = async () => {
+        const results = await getAvailableUser();
+        setUsers(results);
+      };
+
+      fetchUsers();
+      fetchPreReq();
+    }, [])
+  );
 
   const handleUpdateTask = async () => {
     // Validate that start date is before end date
@@ -214,7 +224,16 @@ const ViewTaskScreen = () => {
             </View>
             <View style={[styles.staticContent]}>
               {statusBadge(task.status)}       
-            </View> 
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={commonStyles.inputLabel}>Prerequisite</Text>        
+            </View>            
+            <View style={[styles.staticContent]}>
+              {preReq.map((item) => <Text style={[commonStyles.inputLabel]}>{item.name}</Text>)}
+              <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { project, task })}>
+                <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
+              </TouchableOpacity>            
+            </View>
         </View>   
       </ScrollView>
     </View>

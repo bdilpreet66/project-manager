@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert, Button, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
@@ -86,82 +86,113 @@ const CreateTaskScreen = () => {
   }
 
   return (
-    <View style={[commonStyles.container,styles.container]}>
-        <Image source={require('../../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
-        <Text style={commonStyles.heading}>Create Task</Text>
-        <Text>Create a Task for # {project.id}</Text>
-        <View style={styles.inputContainer}>
-          <TextInput
-              placeholder="Name"
-              value={name}
-              onChangeText={setName}
-              style={commonStyles.input}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              style={[commonStyles.input,{ height: 140 }]}
-          />   
-        </View>
-        <TouchableOpacity onPress={() => setShowStartPicker(true)}>
-          <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Start Date"
-                value={startDate.toLocaleString()}
-                editable={false}
-                style={[commonStyles.input]}
-            />
-            {showStartPicker && (
-              <DateTimePicker
-                value={startDate}
-                mode="datetime"
-                display="default"
-                onChange={onStartDateChange}
+    <View style={styles.scroll}>
+      <View style={styles.ctaContainer}> 
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
+        <TouchableOpacity onPress={handleCreateTask}>
+          <Text style={commonStyles.labelTopNav}>Save</Text>
+        </TouchableOpacity>      
+      </View> 
+      <ScrollView> 
+        <View style={[commonStyles.container,styles.container]}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                  placeholder="Name"
+                  value={name}
+                  onChangeText={setName}
+                  style={commonStyles.input}
               />
-            )}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowEndPicker(true)}>
-          <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="End Date"
-                value={endDate.toLocaleString()}
-                editable={false}
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                  placeholder="Description"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  style={[commonStyles.input,{ height: 140 }]}
+              />   
+            </View>
+            <TouchableOpacity onPress={() => setShowStartPicker(true)}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Start Date"
+                    value={startDate.toLocaleString()}
+                    editable={false}
+                    style={[commonStyles.input]}
+                />
+                {showStartPicker && (
+                  <DateTimePicker
+                    value={startDate}
+                    mode="datetime"
+                    display="default"
+                    onChange={onStartDateChange}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowEndPicker(true)}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="End Date"
+                    value={endDate.toLocaleString()}
+                    editable={false}
+                    style={[commonStyles.input]}
+                />
+                {showEndPicker && (
+                  <DateTimePicker
+                    value={endDate}
+                    mode="datetime"
+                    display="default"
+                    onChange={onEndDateChange}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+            <View style={[styles.inputContainer, styles.border]}>
+              <Picker
                 style={[commonStyles.input]}
-            />
-            {showEndPicker && (
-              <DateTimePicker
-                value={endDate}
-                mode="datetime"
-                display="default"
-                onChange={onEndDateChange}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-        <View style={[styles.inputContainer, styles.border]}>
-          <Picker
-            style={[commonStyles.input]}
-            selectedValue={assignedTo}
-            onValueChange={(itemValue, itemIndex) =>
-              setAssignedTo(itemValue)
-            }>
-            {users?.map((user, index) => <Picker.Item key={index} label={user.email} value={user.email} />)}
-          </Picker>
-        </View>
-        <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary, styles.button]} onPress={handleCreateTask}>
-          <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Task</Text>
-        </TouchableOpacity>                 
+                selectedValue={assignedTo}
+                onValueChange={(itemValue, itemIndex) =>
+                  setAssignedTo(itemValue)
+                }>
+                {users?.map((user, index) => <Picker.Item key={index} label={user.email} value={user.email} />)}
+              </Picker>
+            </View>               
+        </View>    
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({  
+  scroll: {
+    backgroundColor: theme.colors.white,
+    height: "100%",
+    marginBottom: 90
+  },
+  ctaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    paddingTop: 60,    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 20,
+  },
+  ctaButton: {    
+    width: 'auto',    
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    position: 'absolute',
+    right: 20,
+    bottom: 0,
+  },
+  ctaButtonText: {
+    color: theme.colors.black,    
+  },
   container: {    
     alignItems: 'flex-start',    
     padding: 20,

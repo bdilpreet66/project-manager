@@ -16,6 +16,7 @@ import PmCreateProjectScreen from './screens/project_manager/project/CreateProje
 import PmViewProjectScreen from './screens/project_manager/project/ViewProjectScreen';
 import PmCreateTaskScreen from './screens/project_manager/project/tasks/CreateTaskScreen';
 import PmViewTaskScreen from './screens/project_manager/project/tasks/ViewTaskScreen';
+import PmPreReqTaskScreen from './screens/project_manager/project/tasks/PrerequisiteTasksScreen';
 
 import PmMemberListScreen from './screens/project_manager/members/MemberListScreen';
 import PmCreateMemberScreen from './screens/project_manager/members/CreateMemberScreen';
@@ -99,6 +100,7 @@ function ProjectManagerProjectStack() {
         <Stack.Screen name="View Project" component={PmViewProjectScreen} />
         <Stack.Screen name="Create Task" component={PmCreateTaskScreen} />
         <Stack.Screen name="View Task" component={PmViewTaskScreen} />
+        <Stack.Screen name="Pre Req Task" component={PmPreReqTaskScreen} />
       </Stack.Navigator>
     );
 }

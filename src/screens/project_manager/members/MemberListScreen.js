@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { listUsers } from '../../../store/user'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 
@@ -15,9 +15,11 @@ const MemberListScreen = () => {
 
   const screenWidth = Dimensions.get('window').width - 40;
 
-  useEffect(() => {
-    loadMembers();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadMembers();
+    }, [])
+  );
 
   const loadMembers = async () => {
     if (loading || !hasMore) return;

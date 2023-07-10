@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, FlatList, Dimensions, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import commonStyles from '../../../theme/commonStyles';
-import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../../../store/project'
+import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../../../store/project';
 import theme from '../../../theme/theme';
 import { formatDate } from '../../../common/Date';
 import WorkHistoryModal from './WorkHistoryModal';
@@ -25,16 +25,18 @@ const ViewProjectScreen = () => {
     created_by: project.created_by,
   });
 
-  useEffect(() => {
-    (async () => {
-      const taskData = await getTasksByProject(project.id);
-      setTasks(taskData);
-    })();
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const taskData = await getTasksByProject(project.id);
+        setTasks(taskData);
+      })();
 
-    const totalCost = getProjectTotalCost(project.id).total_cost;    
-    serTotalCost(totalCost === undefined ? 0.00.toFixed(2) : totalCost);
+      const totalCost = getProjectTotalCost(project.id).total_cost;    
+      serTotalCost(totalCost === undefined ? 0.00.toFixed(2) : totalCost);
 
-  }, []);
+    }, [])
+  );
 
   const handleSave = async () => {
     try {
@@ -133,7 +135,8 @@ const ViewProjectScreen = () => {
           <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Task',{ project: projectData } )}>
             <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Task</Text>
           </TouchableOpacity>  
-        </View>    
+        </View>
+
         <View style={styles.taskList}>
           {tasks.map(
             (item) => (    

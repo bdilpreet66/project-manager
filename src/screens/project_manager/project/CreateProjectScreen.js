@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Alert, Image, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Alert, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
 import commonStyles from '../../../theme/commonStyles';
+import theme from '../../../theme/theme';
 import { addProject } from '../../../store/project';
 import { useNavigation } from '@react-navigation/native';
 
@@ -33,36 +34,67 @@ const CreateProjectScreen = () => {
   }
 
   return (
-      <View style={[commonStyles.container,styles.container]}>
-          <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
-          <Text style={commonStyles.heading}>Project Management</Text>
-          <Text>Create and modify your projects</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-                style={commonStyles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Description"
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                numberOfLines={4}
-                style={[commonStyles.input,{ height: 140 }]}
-            />   
-          </View>          
-          <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary, styles.button]} onPress={handleCreateProject}>
-            <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Project</Text>
-          </TouchableOpacity>                 
-      </View>
+    <View style={styles.scroll}>
+      <View style={styles.ctaContainer}> 
+        <TouchableOpacity onPress={() => navigation.navigate('Project List')}>
+          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
+        <TouchableOpacity onPress={handleCreateProject}>
+          <Text style={commonStyles.labelTopNav}>Save</Text>
+        </TouchableOpacity>      
+      </View> 
+      <ScrollView> 
+        <View style={[commonStyles.container,styles.container]}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                  placeholder="Name"
+                  value={name}
+                  onChangeText={setName}
+                  style={commonStyles.input}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                  placeholder="Description"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  style={[commonStyles.input,{ height: 140 }]}
+              />   
+            </View>           
+        </View>    
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({  
+  scroll: {
+    backgroundColor: theme.colors.white,
+    height: "100%",
+    marginBottom: 90
+  },
+  ctaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    paddingTop: 60,    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 20,
+  },
+  ctaButton: {    
+    width: 'auto',    
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    position: 'absolute',
+    right: 20,
+    bottom: 0,
+  },
+  ctaButtonText: {
+    color: theme.colors.black,    
+  },
   container: {    
     alignItems: 'flex-start',    
     padding: 20,
@@ -73,7 +105,7 @@ const styles = StyleSheet.create({
   }, 
   inputContainer: {
     marginTop: 20,
-  } 
+  },
 });
 
 export default CreateProjectScreen;

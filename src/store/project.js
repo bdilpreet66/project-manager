@@ -46,7 +46,10 @@ export const listProjects = async (page, searchText) => {
 
 export const getAvailableTasks = async (projectId, currentTaskId) => {
   try {
-    let query = `SELECT * FROM Tasks WHERE project_id = ${projectId} AND id != ${currentTaskId}`;
+    let query = `SELECT Tasks.id, Tasks.name, CASE WHEN Prerequisites.id IS NULL THEN 0 ELSE 1 END AS isPreReq
+                 FROM Tasks 
+                 LEFT JOIN Prerequisites ON Tasks.id = Prerequisites.task_id AND Prerequisites.prerequisite_task_id = ${currentTaskId}
+                 WHERE Tasks.project_id = ${projectId} AND Tasks.id != ${currentTaskId}`;
 
     const results = await executeSql(query, []); // Execute the SQL query with parameters
 
@@ -54,14 +57,9 @@ export const getAvailableTasks = async (projectId, currentTaskId) => {
     let tasks = results.map((row) => ({
       id: row.id,
       name: row.name,
+      isPreReq: Boolean(row.isPreReq),
     }));
-
-    // Remove tasks for which the current task is a prerequisite
-    const prerequisiteQuery = `SELECT * FROM Prerequisites WHERE prerequisite_task_id = ${currentTaskId}`;
-    const prerequisiteResults = await executeSql(prerequisiteQuery, []);
-    const prerequisiteIds = prerequisiteResults.map((row) => row.task_id);
-    tasks = tasks.filter((task) => !prerequisiteIds.includes(task.id));
-
+    
     return tasks;
   } catch (error) {
     console.error('Error listing tasks:', error);
@@ -229,3 +227,51 @@ export const getWorkHistoryByProjectId = async (projectId) => {
       throw error;
   }
 };
+
+export const createPrerequisite = async (taskId, prerequisiteTaskId) => {
+  try {
+    let query = `INSERT INTO Prerequisites (task_id, prerequisite_task_id) VALUES (?, ?)`;
+
+    await executeSql(query, [taskId, prerequisiteTaskId]); // Execute the SQL query with parameters
+
+    console.log(`Prerequisite created: Task ${prerequisiteTaskId} is a prerequisite for Task ${taskId}`);
+  } catch (error) {
+    console.error('Error creating prerequisite:', error);
+    throw error;
+  }
+};
+
+export const listPrerequisite = async (taskId) => {
+  try {
+    let query = `SELECT * FROM Prerequisites WHERE task_id = ${taskId}`;
+
+    console.log(query)
+    const results = await executeSql(query, []); // Execute the SQL query with parameters
+    console.log(results)
+
+    // Format the results as needed, assuming each result row is an object with properties matching the table columns
+    let tasks = results.map((row) => ({
+      id: row.id,
+      name: row.name,
+    }));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error creating prerequisite:', error);
+    throw error;
+  }
+};
+
+export const deletePrerequisite = async (taskId, prerequisiteTaskId) => {
+  try {
+    let query = `DELETE FROM Prerequisites WHERE task_id = ? AND prerequisite_task_id = ?`;
+
+    await executeSql(query, [taskId, prerequisiteTaskId]); // Execute the SQL query with parameters
+
+    console.log(`Prerequisite deleted: Task ${prerequisiteTaskId} is no longer a prerequisite for Task ${taskId}`);
+  } catch (error) {
+    console.error('Error deleting prerequisite:', error);
+    throw error;
+  }
+};
+

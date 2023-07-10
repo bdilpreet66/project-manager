@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
 import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { listProjects } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
@@ -16,7 +16,7 @@ const ProjectListScreen = () => {
   const screenWidth = Dimensions.get('window').width - 40;
   
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       handleSearch();
       // return a cleanup function if necessary
       return () => {};
