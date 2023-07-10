@@ -69,8 +69,6 @@ export const getAvailableTasks = async (projectId, currentTaskId) => {
   }
 };
 
-
-
 export const addProject = async (name, description) => {
   try {
     const user = await getUserData(); 
@@ -133,6 +131,31 @@ export const createTask = async (task) => {
     await executeSql(query, params);
   } catch (error) {
     console.error('Error creating task:', error);
+    throw error;
+  }
+};
+
+
+export const getTasksByProject = async (projectId) => {
+  try {
+    let query = `SELECT * FROM Tasks WHERE project_id = ${projectId}`;
+
+    const results = await executeSql(query, []); // Execute the SQL query with parameters
+
+    // Format the results as needed, assuming each result row is an object with properties matching the table columns
+    let tasks = results.map((row) => ({
+      id: row.id,
+      name: row.name,
+      end_date: row.end_date,
+      start_date: row.start_date,
+      assigned_to: row.assigned_to,
+      status: row.status,
+      description: row.description
+    }));    
+
+    return tasks;
+  } catch (error) {
+    console.error('Error listing tasks:', error);
     throw error;
   }
 };

@@ -79,6 +79,9 @@ export default {
   link: {
     color: theme.colors.primary,
   },
+  underline: {
+    textDecorationLine: 'underline',
+  },
   badge: {
     borderRadius: 20,
     padding: 8,
