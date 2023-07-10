@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { listProjects } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 
@@ -15,7 +15,7 @@ const ProjectListScreen = () => {
 
   const screenWidth = Dimensions.get('window').width - 40;
 
-  useEffect(() => {
+  /*useEffect(() => {
     loadProjects();
   }, []);
 
@@ -34,6 +34,29 @@ const ProjectListScreen = () => {
       console.error('Error loading projects:', error);
     }
 
+    setLoading(false);
+  };*/
+  useFocusEffect(
+    React.useCallback(() => {
+      loadProjects();
+      // return a cleanup function if necessary
+      return () => {};
+    }, [])
+  );
+  
+  const loadProjects = async () => {
+    setLoading(true);
+  
+    try {
+      const newProjects = await listProjects(0, searchText); // Fetch projects from the first page
+  
+      setProjects(newProjects);
+      setHasMore(newProjects.length > 0);
+      setPage(1);  // Reset page number
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    }
+  
     setLoading(false);
   };
 

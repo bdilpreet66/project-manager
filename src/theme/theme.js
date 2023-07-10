@@ -15,7 +15,7 @@ export default {
     },
     fontSize: {
       small: 14,
-      medium: 18,
+      medium: 16,
       large: 24,
     },
     fontWeight: {

@@ -60,3 +60,34 @@ export const addProject = async (name, description) => {
     throw error;
   }
 };
+
+export const updateProjectByID = async (id, projectData) => {
+  try {
+      const { name, description } = projectData;
+
+      let query = `
+          UPDATE Projects 
+          SET 
+              name = '${name}', 
+              description = '${description}'                            
+          WHERE id = ${id};
+      `;
+
+      let params = [];
+      console.log(id);
+
+      console.log('Project Update Query: ' + query);
+      const results = await executeSql(query, params);
+
+      if (results.rowsAffected > 0) {
+          console.log('Project updated successfully.');
+      } else {
+          console.log('No project found with the provided ID.');
+      }
+      return results.rowsAffected > 0;
+  } catch (error) {
+      console.error('Error updating project:', error);
+      throw error;
+  }
+};
+

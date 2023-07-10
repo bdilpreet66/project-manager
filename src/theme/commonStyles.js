@@ -67,6 +67,7 @@ export default {
     borderRadius: 5,
     minWidth: "100%",
     fontSize: theme.fontSize.medium,
+    backgroundColor: theme.colors.greyBackground,
   },  
   inputLabel: {
     fontWeight: 'bold',
@@ -97,5 +98,11 @@ export default {
   },
   badgeSuccess: {
     backgroundColor: theme.colors.success,
+  },
+  labelTopNav: {
+    fontSize: theme.fontSize.small,
+  },
+  labelTopNavHeading: {
+    fontSize: theme.fontSize.medium,
   }
 }
