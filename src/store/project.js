@@ -44,6 +44,32 @@ export const listProjects = async (page, searchText) => {
     }
 };
 
+export const getAvailableTasks = async (projectId, currentTaskId) => {
+  try {
+    let query = `SELECT * FROM Tasks WHERE project_id = ${projectId} AND id != ${currentTaskId}`;
+
+    const results = await executeSql(query, []); // Execute the SQL query with parameters
+
+    // Format the results as needed, assuming each result row is an object with properties matching the table columns
+    let tasks = results.map((row) => ({
+      id: row.id,
+      name: row.name,
+    }));
+
+    // Remove tasks for which the current task is a prerequisite
+    const prerequisiteQuery = `SELECT * FROM Prerequisites WHERE prerequisite_task_id = ${currentTaskId}`;
+    const prerequisiteResults = await executeSql(prerequisiteQuery, []);
+    const prerequisiteIds = prerequisiteResults.map((row) => row.task_id);
+    tasks = tasks.filter((task) => !prerequisiteIds.includes(task.id));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error listing tasks:', error);
+    throw error;
+  }
+};
+
+
 
 export const addProject = async (name, description) => {
   try {
@@ -57,6 +83,27 @@ export const addProject = async (name, description) => {
     return results;
   } catch (error) {
     console.error('Error adding project:', error);
+    throw error;
+  }
+};
+
+// project.js
+export const createTask = async (task) => {
+  try {
+    let query = `INSERT INTO Tasks (name, description, start_date, end_date, assigned_to, status, project_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const params = [
+      task.name,
+      task.description,
+      task.start_date,
+      task.end_date,
+      task.assigned_to,
+      task.status,
+      task.project_id,
+    ];
+
+    await executeSql(query, params);
+  } catch (error) {
+    console.error('Error creating task:', error);
     throw error;
   }
 };
