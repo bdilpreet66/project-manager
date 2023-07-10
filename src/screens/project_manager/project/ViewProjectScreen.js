@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import commonStyles from '../../../theme/commonStyles';
-import { updateProjectByID } from './../../../store/project'
+import { updateProjectByID, getTasksByProject } from './../../../store/project'
 import theme from '../../../theme/theme';
 
 const ViewProjectScreen = () => {
   const route = useRoute();
   const { project } = route.params;
   const navigation = useNavigation();
+  const [tasks, setTasks] = useState([]);
 
   const [projectData, setProjectData] = useState({
     id: project.id,
@@ -19,6 +20,13 @@ const ViewProjectScreen = () => {
     completion_date: project.completion_date,
     created_by: project.created_by,
   });
+
+  useEffect(() => {
+    (async () => {
+      const taskData = await getTasksByProject(project.id);
+      setTasks(taskData);
+    })();
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -60,20 +68,45 @@ const ViewProjectScreen = () => {
             onChangeText={(text) => setProjectData({ ...projectData, description: text })}
         />                                    
       </View>
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer]}>
         <Text style={commonStyles.inputLabel}>Status</Text>
-        <Text style={commonStyles.inputLabel}>Incomplete</Text>
+      </View>
+      <View style={[styles.staticContent]}>
+        {projectData.status === 'pending' ?
+          <Text style={[commonStyles.inputLabel,commonStyles.badge,commonStyles.badgeWarning,styles.status]}>Incomplete</Text>
+        :
+          <Text style={[commonStyles.inputLabel,]}>Completed</Text>
+        }        
       </View>            
       <View style={styles.inputContainer}>
-        <Text style={commonStyles.inputLabel}>Total Cost</Text>
-        <Text style={commonStyles.inputLabel}>$100.00</Text>
+        <Text style={commonStyles.inputLabel}>Total Cost</Text>        
       </View>            
-    </View>   
+      <View style={[styles.staticContent]}>
+        <Text style={[commonStyles.inputLabel,styles.staticContent]}>$100.00</Text>
+        <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
+      </View>
+    </View>       
+    <View>      
+      <FlatList
+        data={tasks}
+        keyExtractor={item => item.id.toString()} // Assuming 'id' is a unique identifier
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.name}</Text>
+            <Text>{item.description}</Text>
+            <Text>Start Date: {item.start_date}</Text>
+            <Text>End Date: {item.end_date}</Text>
+            <Text>Assigned to: {item.assigned_to}</Text>
+            <Text>Status: {item.status}</Text>
+          </View>
+        )}
+      />
+    </View> 
     <View style={styles.ctaContainer}>      
       <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Task',{ project: projectData } )}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Task</Text>
       </TouchableOpacity>  
-    </View> 
+    </View>   
     </>
   );
 };
@@ -112,7 +145,18 @@ const styles = StyleSheet.create({
   },
   ctaButtonText: {
     color: theme.colors.black,    
-  } 
+  },
+  staticContent: {
+    backgroundColor: theme.colors.greyBackground,
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    display: 'flex',
+  },
+  status:{
+    width: 100,
+    textAlign: 'center',
+  },
 });
 
 export default ViewProjectScreen;
