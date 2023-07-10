@@ -14,28 +14,7 @@ const ProjectListScreen = () => {
   const [page, setPage] = useState(1);  
 
   const screenWidth = Dimensions.get('window').width - 40;
-
-  /*useEffect(() => {
-    loadProjects();
-  }, []);
-
-  const loadProjects = async () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-
-    try {
-      const users = await listProjects(page, searchText); // Fetch projects using the 'listProjects' function
-
-      setProjects((prevProjects) => [...prevProjects, ...users]);
-      setHasMore(users.length > 0);
-      setPage((prevPage) => prevPage + 1);
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    }
-
-    setLoading(false);
-  };*/
+  
   useFocusEffect(
     React.useCallback(() => {
       loadProjects();
@@ -45,14 +24,15 @@ const ProjectListScreen = () => {
   );
   
   const loadProjects = async () => {
+    if (loading || !hasMore) return;
     setLoading(true);
   
     try {
-      const newProjects = await listProjects(0, searchText); // Fetch projects from the first page
+      const newProjects = await listProjects(page, searchText); // Fetch projects from the first page
   
-      setProjects(newProjects);
+      setProjects((prevProjects) => [...prevProjects, ...newProjects]);
       setHasMore(newProjects.length > 0);
-      setPage(1);  // Reset page number
+      setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading projects:', error);
     }
@@ -66,10 +46,10 @@ const ProjectListScreen = () => {
     setLoading(true);
 
     try {
-      const users = await listProjects(1, searchText); // Fetch projects using the 'listProjects' function
+      const newProjects = await listProjects(1, searchText); // Fetch projects using the 'listProjects' function
 
-      setProjects((prevProjects) => [...prevProjects, ...users]);
-      setHasMore(users.length > 0);
+      setProjects((prevProjects) => [...prevProjects, ...newProjects]);
+      setHasMore(newProjects.length > 0);
       setPage(2);
     } catch (error) {
       console.error('Error loading projects:', error);

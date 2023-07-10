@@ -117,7 +117,6 @@ export const updateProjectByID = async (id, projectData) => {
   }
 };
 
-// project.js
 export const createTask = async (task) => {
   try {
     let query = `INSERT INTO Tasks (name, description, start_date, end_date, assigned_to, status, project_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
