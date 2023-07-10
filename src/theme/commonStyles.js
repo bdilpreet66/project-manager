@@ -84,7 +84,8 @@ export default {
   },
   badge: {
     borderRadius: 20,
-    padding: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     color: theme.colors.white,    
   },
   badgeDefault: {

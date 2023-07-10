@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, FlatList, Dimensions, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import commonStyles from '../../../theme/commonStyles';
-import { updateProjectByID, getTasksByProject } from './../../../store/project'
+import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../../../store/project'
 import theme from '../../../theme/theme';
+import { formatDate } from '../../../common/Date';
+import WorkHistoryModal from './WorkHistoryModal';
 
 const ViewProjectScreen = () => {
   const route = useRoute();
   const { project } = route.params;
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
+  const [totalCost, serTotalCost] = useState('0.00');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [projectData, setProjectData] = useState({
     id: project.id,
@@ -26,6 +30,10 @@ const ViewProjectScreen = () => {
       const taskData = await getTasksByProject(project.id);
       setTasks(taskData);
     })();
+
+    const totalCost = getProjectTotalCost(project.id).total_cost;    
+    serTotalCost(totalCost === undefined ? 0.00.toFixed(2) : totalCost);
+
   }, []);
 
   const handleSave = async () => {
@@ -37,6 +45,31 @@ const ViewProjectScreen = () => {
         Alert.alert('Error', 'Failed to save project details.');
     }
   };
+
+  const statusBadge = (status) => {    
+    let badgeClass = commonStyles.badge;
+    let styles = [badgeClass];
+    
+    if (status === 'pending') {
+      styles.push(commonStyles.badgeWarning);
+    }
+    
+    if (status === 'completed') {
+      styles.push(commonStyles.badgeSuccess);
+    }
+    
+    if (status === 'in-progress') {
+      styles.push(commonStyles.badgeInfo);
+    }
+    
+    if (status === 'over-due') {
+      styles.push(commonStyles.badgeError);
+    }
+    
+    return (
+      <Text style={styles}>{status}</Text>
+    )
+  }
 
   return (
     <View style={styles.scroll}>
@@ -83,9 +116,16 @@ const ViewProjectScreen = () => {
             <Text style={commonStyles.inputLabel}>Total Cost</Text>        
           </View>            
           <View style={[styles.staticContent]}>
-            <Text style={[commonStyles.inputLabel,styles.staticContent]}>$100.00</Text>
-            <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
+            <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
+            </TouchableOpacity>            
           </View>
+          <WorkHistoryModal 
+            projectId={project.id} 
+            modalVisible={modalVisible} 
+            setModalVisible={setModalVisible} 
+          />
         </View>   
         
         <View style={styles.ctaContainer}>
@@ -100,14 +140,11 @@ const ViewProjectScreen = () => {
               <TouchableOpacity style={[styles.listItem]} onPress={() => navigation.navigate('View Task', { project: project, task: item })}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text>{item.id}# {item.name}</Text>
-                  <Text>Due Date: {item.end_date}</Text>
+                  <Text>Due: {formatDate(item.end_date)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {item.status == "pending" ? 
-                    <Text style={[commonStyles.badge,commonStyles.badgeWarning,styles.badge]}>{item.status}</Text> : 
-                    <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.status}</Text>
-                    }
-                    <Text>Assigned To: {item.assigned_to}</Text>
+                    {statusBadge(item.status)}
+                    <Text>{item.assigned_to}</Text>
                 </View>
               </TouchableOpacity>
             )

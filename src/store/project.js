@@ -159,3 +159,51 @@ export const getTasksByProject = async (projectId) => {
     throw error;
   }
 };
+
+export const getProjectTotalCost = async (projectId) => {
+  try {
+    let query = `SELECT SUM(WorkHours.hours * Users.hourly_rate) AS total_cost
+    FROM Projects 
+    INNER JOIN Tasks ON Projects.id = Tasks.project_id 
+    INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
+    INNER JOIN Users ON WorkHours.recorded_by = Users.email 
+    WHERE Projects.id = ${projectId};`;
+    const results = await executeSql(query, []); 
+    return results;
+  } catch (error) {
+    console.log('Error calculating project cost.');
+    throw error;
+  }
+}
+
+export const getWorkHistoryByProjectId = async (projectId) => {
+  try {
+      let query = `
+          SELECT 
+              Tasks.id AS task_id,
+              Tasks.name AS task_name,
+              Tasks.assigned_to,
+              WorkHours.recorded_date
+          FROM Tasks 
+          INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
+          WHERE Tasks.project_id = ?
+          ORDER BY WorkHours.recorded_date DESC`;
+
+      let params = [projectId];
+
+      const results = await executeSql(query, params);
+
+      /*let workHistory = [];
+
+      if (results.rows.length > 0) {
+          for (let i = 0; i < results.rows.length; i++) {
+              workHistory.push(results.rows.item(i));
+          }
+      }*/
+      
+      return results;
+  } catch (error) {
+      console.error('Error retrieving work history:', error);
+      throw error;
+  }
+};
