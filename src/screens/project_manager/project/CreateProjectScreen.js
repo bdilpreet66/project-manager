@@ -62,8 +62,6 @@ const CreateProjectScreen = () => {
   );
 };
 
-export default CreateProjectScreen;
-
 const styles = StyleSheet.create({  
   container: {    
     alignItems: 'flex-start',    
@@ -77,3 +75,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   } 
 });
+
+export default CreateProjectScreen;

@@ -9,7 +9,6 @@ const Login = ({navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
-  const [rememberMe, setRememberMe] = useState(false);
 
   const toggleHidePassword = () => {
     setHidePassword(!hidePassword);
@@ -83,13 +82,6 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.checkboxContainer}>
-        <Switch
-          value={rememberMe}
-          onValueChange={setRememberMe}
-        />
-        <Text style={styles.label}>Remember me</Text>
-      </View>
       <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary, styles.button]} onPress={handleLogin}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Log In</Text>
       </TouchableOpacity>
@@ -123,14 +115,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 15,
     alignSelf: 'center', 
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    width: '90%',
-    justifyContent: "flex-start",     
-  },
-  checkbox: {
-    alignSelf: "center",
   },
   label: {
     margin: 8,

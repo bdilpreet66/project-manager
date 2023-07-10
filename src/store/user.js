@@ -75,22 +75,36 @@ export const listUsers = async (page, searchText) => {
     }
 };
 
+export const getAvailableUser = async () => {
+    try {
+
+      user = await getUserData();
+  
+      let query = `SELECT * FROM Users WHERE created_by = '${user.email}' OR email = '${user.email}'`;
+
+      const results = await executeSql(query, []); // Execute the SQL query with parameters
+  
+      // Format the results as needed, assuming each result row is an object with properties matching the table columns
+      const users = results.map((row) => ({
+        email: row.email,
+        hourly_rate: row.hourly_rate,
+        type: row.type,
+        created_by: row.created_by,
+      }));
+  
+      return users;
+    } catch (error) {
+      console.error('Error listing users:', error);
+      throw error;
+    }
+};
+
 export const searchUsers = async (email) => {
     try {
         const users = await executeSql('SELECT * FROM Users WHERE email = ?', [email]);
         return users;
     } catch (error) {
         console.error("Error searching users: ", error);
-        throw error;
-    }
-};
-
-export const checkAdmin = async (email) => {
-    try {
-        const users = await executeSql('SELECT * FROM Users WHERE email = ? AND type = "admin"', [email]);
-        return users.length > 0;
-    } catch (error) {
-        console.error("Error checking admin: ", error);
         throw error;
     }
 };

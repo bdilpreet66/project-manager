@@ -106,7 +106,7 @@ const Signup = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary]} onPress={handleSignup}>
+      <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.button]} onPress={handleSignup}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.linkContainer} onPress={() => navigation.navigate('Login')}>
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    marginTop: 20,
-  }
+    width: '90%',
+  } 
 });
 
 export default Signup;
