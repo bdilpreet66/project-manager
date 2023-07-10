@@ -234,7 +234,7 @@ export const createPrerequisite = async (taskId, prerequisiteTaskId) => {
   try {
     let query = `INSERT INTO Prerequisites (task_id, prerequisite_task_id) VALUES (?, ?)`;
 
-    await executeSql(query, [taskId, prerequisiteTaskId]); // Execute the SQL query with parameters
+    await executeSql(query, [taskId, prerequisiteTaskId]);
 
     console.log(`Prerequisite created: Task ${prerequisiteTaskId} is a prerequisite for Task ${taskId}`);
   } catch (error) {
@@ -247,11 +247,8 @@ export const listPrerequisite = async (taskId) => {
   try {
     let query = `SELECT * FROM Prerequisites WHERE task_id = ${taskId}`;
 
-    console.log(query)
-    const results = await executeSql(query, []); // Execute the SQL query with parameters
-    console.log(results)
+    const results = await executeSql(query, []);
 
-    // Format the results as needed, assuming each result row is an object with properties matching the table columns
     let tasks = results.map((row) => ({
       id: row.id,
       prerequisite_task_id: row.prerequisite_task_id,
@@ -311,4 +308,36 @@ export const addTaskComment = async (comment,taskid) => {
     throw error;
   }
 };
+
+
+export const listWorkHours = async (page, id) => {
+  try {
+    const offset = (page - 1) * 10; // Assuming each page shows 10 work hours records
+    const limit = 10; // Number of work hours records to fetch per page
+
+    let query = `SELECT * FROM WorkHours WHERE task_id = ${id}`;
+    let params = [];
+    
+    query += ' ORDER BY recorded_date DESC'; // Assuming you want to order by the recorded date in descending order
+    query += ` LIMIT ${limit} OFFSET ${offset}`;
+    
+    const results = await executeSql(query, params); // Execute the SQL query with parameters
+
+    // Format the results as needed, assuming each result row is an object with properties matching the table columns
+    const workHours = results.map((row) => ({
+      id: row.id,
+      hours: row.hours,
+      minutes: row.minutes,
+      recorded_date: row.recorded_date,
+      approved: row.approved,
+      recorded_by: row.recorded_by,
+    }));
+
+    return workHours;
+  } catch (error) {
+    console.error('Error listing work hours:', error);
+    throw error;
+  }
+};
+
 

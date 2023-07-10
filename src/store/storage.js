@@ -53,6 +53,7 @@ export const initializeDB = async () => {
     await executeSql(`CREATE TABLE IF NOT EXISTS WorkHours (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         hours INTEGER NOT NULL,
+        minutes INTEGER NOT NULL,
         recorded_date TEXT NOT NULL,
         approved INTEGER DEFAULT 0,
         task_id INTEGER,

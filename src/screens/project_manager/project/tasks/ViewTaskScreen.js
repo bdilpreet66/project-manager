@@ -25,6 +25,7 @@ const ViewTaskScreen = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [users, setUsers] = useState([]);
   const [preReq, setRreReq] = useState([]);
+  const [totalCost, serTotalCost] = useState('0.00');
 
   const [comment, setComment] = useState();
   const [comments, setComments] = useState([]);
@@ -108,23 +109,21 @@ const ViewTaskScreen = () => {
     }
   }
 
-  const statusBadge = (status) => {    
-    let badgeClass = commonStyles.badge;
-    let styles = [badgeClass];
+  const statusBadge = (status) => {
+    let styles = [commonStyles.inputLabel, commonStyles.badge, { width: 100, textAlign: 'center' }];
     
     if (status === 'pending') {
       styles.push(commonStyles.badgeWarning);
     }
-    
+    else
     if (status === 'completed') {
       styles.push(commonStyles.badgeSuccess);
     }
-    
+    else
     if (status === 'in-progress') {
       styles.push(commonStyles.badgeInfo);
     }
-    
-    if (status === 'overdue') {
+    else {
       styles.push(commonStyles.badgeError);
     }
     
@@ -245,6 +244,15 @@ const ViewTaskScreen = () => {
             </View>
             <View style={[styles.staticContent]}>
               {statusBadge(task.status)}       
+            </View> 
+            <View style={styles.inputContainer}>
+              <Text style={commonStyles.inputLabel}>Total Cost</Text>        
+            </View>            
+            <View style={[styles.staticContent]}>
+              <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Task Work History', { task: task })}>
+                <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Prerequisite</Text>        
@@ -331,10 +339,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '100%',
     display: 'flex',
-  },
-  status:{
-    width: 100,
-    textAlign: 'center',
   },
   listItem: {
     marginBottom: 20,
