@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Platform, ScrollView } from 'react-native';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
-import { getAvailableUser } from '../../../../store/user';
-import { updateTask, listPrerequisite } from '../../../../store/project';
+import { getAvailableUser }  from '../../../../store/user';
+import { updateTask, listPrerequisite, addTaskComment, getTaskComments } from '../../../../store/project';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -26,8 +26,9 @@ const ViewTaskScreen = () => {
   const [users, setUsers] = useState([]);
   const [preReq, setRreReq] = useState([]);
 
-
-
+  const [comment, setComment] = useState();
+  const [comments, setComments] = useState([]);
+ 
   useFocusEffect(
     useCallback(() => {
       const fetchPreReq = async () => {
@@ -40,8 +41,14 @@ const ViewTaskScreen = () => {
         setUsers(results);
       };
 
+      const fetchComments = async () => {
+        const results = await getTaskComments(task.id);
+        setComments(results);
+      };
+
       fetchUsers();
       fetchPreReq();
+      fetchComments();
     }, [])
   );
 
@@ -79,6 +86,12 @@ const ViewTaskScreen = () => {
       console.error(error);
       alert('Error', 'There was an error while creating the task.');
     }
+  }
+
+  const handleAddComment = async () => {
+    await addTaskComment(comment, id);
+    const results = await getTaskComments(task.id);
+    setComments(results);
   }
 
   const onStartDateChange = (event, selectedDate) => {
@@ -119,6 +132,14 @@ const ViewTaskScreen = () => {
       <Text style={styles}>{status}</Text>
     )
   }
+
+  const renderCommentItem = ({ item }) => (
+    <View style={{margin: 10, padding: 10, backgroundColor: '#eee'}}>
+      <Text>{item.comment}</Text>
+      <Text style={{fontSize: 12, color: 'grey'}}>Commented by: {item.commented_by}</Text>
+      <Text style={{fontSize: 12, color: 'grey'}}>Date: {item.comment_date}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.scroll}>
@@ -229,11 +250,40 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Prerequisite</Text>        
             </View>            
             <View style={[styles.staticContent]}>
-              {preReq.map((item) => <Text style={[commonStyles.button, commonStyles.buttonGray]}>#{item.prerequisite_task_id}</Text>)}
+              <View style={[styles.prereqContainer]}>
+                {preReq.map((preitem) => <Text style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
+              </View>              
               <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { project, task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
-              </TouchableOpacity>            
+              </TouchableOpacity>
             </View>
+            <View style={styles.inputContainer}>
+              <Text style={commonStyles.inputLabel}>Comments</Text>        
+            </View>            
+            <View style={[styles.staticContent,styles.commentContainer]}>              
+              <TextInput
+                placeholder="Write a comment"
+                value={comment}
+                onChangeText={setComment}                  
+                style={[commonStyles.input]}
+                multiline
+                numberOfLines={4}
+              />
+              <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
+                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]} onPress={handleAddComment}>Add Comment</Text>
+              </TouchableOpacity>
+              <View>
+                {comments.map((item) => 
+                <>
+                  <View style={[styles.commentItem]}>
+                    <Text>#{item.comment}</Text>
+                    <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
+                  </View>                  
+                </>)}
+              </View>                          
+            </View>
+            <View>            
+          </View>
         </View>   
       </ScrollView>
     </View>
@@ -316,6 +366,33 @@ const styles = StyleSheet.create({
     width: 100,
     textAlign: 'center',
   },
+  badge: {   
+    textAlign: 'center',
+    marginRight: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  prereqContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 15,
+  },
+  buttonComment: {
+    marginTop: 15,
+    width: 'auto',
+    paddingVertical: 10,    
+  }, 
+  commentItem: {
+    backgroundColor: '#EEEEEE',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    color: '#414141',
+  },
+  commentAudit: {
+    color: '#9B9B9B',
+    textAlign: 'right',
+  } 
 });
 
 export default ViewTaskScreen;

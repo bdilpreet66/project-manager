@@ -40,10 +40,7 @@ export default {
   },
   buttonPrimary: {
     backgroundColor: theme.colors.primary,
-  },
-  buttonGray: {
-    backgroundColor: theme.colors.grey,
-  },
+  },  
   buttonError: {
     backgroundColor: theme.colors.red,    
   },
@@ -105,6 +102,9 @@ export default {
   },
   badgeSuccess: {
     backgroundColor: theme.colors.success,
+  },
+  badgeGrey: {
+    backgroundColor: theme.colors.grey,
   },
   labelTopNav: {
     fontSize: theme.fontSize.small,

@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('projectManagerDBv1_1.db');
+const db = SQLite.openDatabase('projectManagerDBv1_2.db');
 
 export const executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>
@@ -69,4 +69,16 @@ export const initializeDB = async () => {
         FOREIGN KEY (task_id) REFERENCES Tasks (id) ON DELETE CASCADE,
         FOREIGN KEY (prerequisite_task_id) REFERENCES Tasks (id) ON DELETE CASCADE
     )`);
+    
+    // Task Comments Table
+    await executeSql(`CREATE TABLE IF NOT EXISTS TaskComments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        task_id INTEGER,
+        comment TEXT NOT NULL,
+        comment_date TEXT DEFAULT CURRENT_DATE,
+        commented_by TEXT,
+        FOREIGN KEY (task_id) REFERENCES Tasks (id) ON DELETE CASCADE,
+        FOREIGN KEY (commented_by) REFERENCES Users (email) ON DELETE SET NULL
+    )`);
+    
 };
