@@ -62,7 +62,7 @@ const ViewProjectScreen = () => {
       styles.push(commonStyles.badgeInfo);
     }
     
-    if (status === 'over-due') {
+    if (status === 'overdue') {
       styles.push(commonStyles.badgeError);
     }
     
@@ -158,7 +158,7 @@ const ViewProjectScreen = () => {
 const styles = StyleSheet.create({  
   container: {    
     alignItems: 'flex-start',    
-    padding: 20,
+    padding: 20
   },  
   button: {
     marginTop: 20,
@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
   },
   scroll: {
     backgroundColor: theme.colors.white,
-    marginBottom: 85
+    height: "100%",
+    marginBottom: 90
   },
   taskList: {
     padding: 20,

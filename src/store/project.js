@@ -135,6 +135,28 @@ export const createTask = async (task) => {
   }
 };
 
+export const updateTask = async (task) => {
+  try {
+    console.log("GO: ", task)
+    let query = 'UPDATE Tasks SET name = ?, description = ?, start_date = ?, end_date = ?, assigned_to = ?, status = ? WHERE id = ?';
+    const params = [
+      task.name,
+      task.description,
+      task.start_date,
+      task.end_date,
+      task.assigned_to,
+      task.status,
+      task.id,
+    ];
+
+    console.log(query)
+    await executeSql(query, params);
+  } catch (error) {
+    console.error('Error creating task:', error);
+    throw error;
+  }
+};
+
 
 export const getTasksByProject = async (projectId) => {
   try {
