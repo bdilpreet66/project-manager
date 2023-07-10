@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('projectManagerDBv1.1.db');
+const db = SQLite.openDatabase('projectManagerDBv1_1.db');
 
 export const executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>

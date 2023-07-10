@@ -37,11 +37,13 @@ const ViewProjectScreen = () => {
         <Text style={commonStyles.labelTopNav}>Cancel</Text>
       </TouchableOpacity>      
       <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
-      <Text style={commonStyles.labelTopNav}>&nbsp;</Text>
+      <TouchableOpacity onPress={handleSave}>
+        <Text style={commonStyles.labelTopNav}>Save</Text>
+      </TouchableOpacity>      
     </View>  
     <View style={[commonStyles.container, styles.container]}>      
       <View style={styles.inputContainer}>
-      <Text style={commonStyles.inputLabel}>Name</Text>
+        <Text style={commonStyles.inputLabel}>Name</Text>
         <TextInput
             value={projectData.name}                
             style={commonStyles.input}
@@ -49,7 +51,7 @@ const ViewProjectScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-      <Text style={commonStyles.inputLabel}>Description</Text>
+        <Text style={commonStyles.inputLabel}>Description</Text>
         <TextInput
             value={projectData.description}            
             multiline
@@ -58,14 +60,19 @@ const ViewProjectScreen = () => {
             onChangeText={(text) => setProjectData({ ...projectData, description: text })}
         />                                    
       </View>
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={ handleSave }>
-        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Save Changes</Text>
-      </TouchableOpacity>               
+      <View style={styles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Status</Text>
+        <Text style={commonStyles.inputLabel}>Incomplete</Text>
+      </View>            
+      <View style={styles.inputContainer}>
+        <Text style={commonStyles.inputLabel}>Total Cost</Text>
+        <Text style={commonStyles.inputLabel}>$100.00</Text>
+      </View>            
     </View>   
-    <View style={styles.ctaContainer}>
-      <TouchableOpacity style={[commonStyles.button,styles.ctaButton]} onPress={() => navigation.navigate('Create Task')}>
-        <Text style={[]}>Create Task</Text>
-      </TouchableOpacity>
+    <View style={styles.ctaContainer}>      
+      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Task',{ project: projectData } )}>
+        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Task</Text>
+      </TouchableOpacity>  
     </View> 
     </>
   );
@@ -78,7 +85,11 @@ const styles = StyleSheet.create({
   },  
   button: {
     marginTop: 20,
-    marginBottom: 20,   
+    marginBottom: 20,
+    width: 'auto',
+    position: 'absolute',
+    right: 20,
+    bottom: 0,
   }, 
   inputContainer: {
     marginTop: 20,
@@ -93,7 +104,11 @@ const styles = StyleSheet.create({
   },
   ctaButton: {    
     width: 'auto',    
-    borderWidth: 1,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    position: 'absolute',
+    right: 20,
+    bottom: 0,
   },
   ctaButtonText: {
     color: theme.colors.black,    
