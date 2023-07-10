@@ -46,13 +46,23 @@ export const listProjects = async (page, searchText) => {
 
 export const getAvailableTasks = async (projectId, currentTaskId) => {
   try {
-    let query = `SELECT Tasks.id, Tasks.name, CASE WHEN Prerequisites.id IS NULL THEN 0 ELSE 1 END AS isPreReq
-                 FROM Tasks 
-                 LEFT JOIN Prerequisites ON Tasks.id = Prerequisites.task_id AND Prerequisites.prerequisite_task_id = ${currentTaskId}
-                 WHERE Tasks.project_id = ${projectId} AND Tasks.id != ${currentTaskId}`;
+    let query = `SELECT Tasks.id, Tasks.name,
+                    CASE WHEN EXISTS (SELECT 1 FROM Prerequisites 
+                                      WHERE Prerequisites.prerequisite_task_id = Tasks.id 
+                                      AND Prerequisites.task_id = ${currentTaskId})
+                        THEN 1 
+                        ELSE 0 
+                    END AS isPreReq
+                FROM Tasks
+                WHERE Tasks.project_id = ${projectId}
+                AND Tasks.id != ${currentTaskId}
+                AND NOT EXISTS (
+                SELECT 1 FROM Prerequisites 
+                WHERE Prerequisites.prerequisite_task_id = ${currentTaskId} 
+                AND Prerequisites.task_id = Tasks.id)`;
 
     const results = await executeSql(query, []); // Execute the SQL query with parameters
-
+    console.log(results)
     // Format the results as needed, assuming each result row is an object with properties matching the table columns
     let tasks = results.map((row) => ({
       id: row.id,
