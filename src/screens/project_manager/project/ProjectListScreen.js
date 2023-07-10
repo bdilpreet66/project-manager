@@ -17,7 +17,7 @@ const ProjectListScreen = () => {
   
   useFocusEffect(
     React.useCallback(() => {
-      loadProjects();
+      handleSearch();
       // return a cleanup function if necessary
       return () => {};
     }, [])
@@ -40,30 +40,12 @@ const ProjectListScreen = () => {
     setLoading(false);
   };
 
-  const initLoadProjects = async () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-
-    try {
-      const newProjects = await listProjects(1, searchText); // Fetch projects using the 'listProjects' function
-
-      setProjects((prevProjects) => [...prevProjects, ...newProjects]);
-      setHasMore(newProjects.length > 0);
-      setPage(2);
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    }
-
-    setLoading(false);
-  };
-
   const handleSearch = async () => {
     // Reset pagination and load projects based on the search text
     setPage(1);
     setProjects([]);
     setHasMore(true);
-    initLoadProjects();
+    loadProjects();
   };
 
   const renderItem = ({ item }) => (    
