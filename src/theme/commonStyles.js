@@ -93,7 +93,7 @@ export default {
   },
   badge: {
     borderRadius: 20,
-    paddingHorizontal: 8,
+    paddingHorizontal: 20,
     paddingVertical: 4,
     color: theme.colors.white,    
   },
