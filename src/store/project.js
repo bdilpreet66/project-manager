@@ -342,10 +342,21 @@ export const listWorkHours = async (page, id) => {
     const offset = (page - 1) * 10; // Assuming each page shows 10 work hours records
     const limit = 10; // Number of work hours records to fetch per page
 
-    let query = `SELECT * FROM WorkHours WHERE task_id = ${id}`;
+    let query = `
+      SELECT 
+        WorkHours.*, 
+        Users.hourly_rate,
+        (Users.hourly_rate * WorkHours.hours) + (Users.hourly_rate * WorkHours.minutes / 60) as cost
+      FROM 
+        WorkHours 
+      INNER JOIN 
+        Users ON WorkHours.recorded_by = Users.email 
+      WHERE 
+        WorkHours.task_id = ${id}`;
+      
     let params = [];
     
-    query += ' ORDER BY recorded_date DESC'; // Assuming you want to order by the recorded date in descending order
+    query += ' ORDER BY WorkHours.recorded_date DESC'; // Assuming you want to order by the recorded date in descending order
     query += ` LIMIT ${limit} OFFSET ${offset}`;
     
     const results = await executeSql(query, params); // Execute the SQL query with parameters
@@ -358,6 +369,7 @@ export const listWorkHours = async (page, id) => {
       recorded_date: row.recorded_date,
       approved: row.approved,
       recorded_by: row.recorded_by,
+      cost: row.cost,
     }));
 
     return workHours;
@@ -366,6 +378,7 @@ export const listWorkHours = async (page, id) => {
     throw error;
   }
 };
+
 
 
 export const getTasksByMember = async (page, searchText) => {
@@ -409,3 +422,16 @@ export const getTasksByMember = async (page, searchText) => {
     throw error;
   }
 };
+
+
+export const createWorkedHour = async (workedHour) => {
+  const { hours, minutes, recorded_date, approved, task_id } = workedHour;
+
+  user = await getUserData();
+  
+  const query = `INSERT INTO WorkHours (hours, minutes, recorded_date, approved, task_id, recorded_by) VALUES (?, ?, ?, ?, ?, ?)`;
+  const params = [hours, minutes, recorded_date, approved, task_id, user.email];
+
+  return executeSql(query, params);
+};
+

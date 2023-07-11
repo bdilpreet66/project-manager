@@ -42,14 +42,18 @@ const WorkHistoryModal = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.listItem,(item.approved ? commonStyles.buttonSuccess : commonStyles.buttonDanger)]} >
+    <TouchableOpacity style={[styles.listItem,(item.approved ? commonStyles.buttonSuccess : commonStyles.buttonError)]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text>{item.recorded_by}</Text>
-        <Text>{item.hours}h : {item.minutes}m</Text>
+        <Text>$ {item.cost}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Date: {item.recorded_date}</Text>
+          <Text>{item.hours}h : {item.minutes}m</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text></Text>
-          <Text></Text>
+          <Text>{item.approved ? "Approved" : "Needs Approval"}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -68,7 +72,7 @@ const WorkHistoryModal = () => {
             </TouchableOpacity>      
             <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
             <TouchableOpacity>
-                <Text style={styles.labelhidden}>Cancel</Text>
+                <Text onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>Add</Text>
             </TouchableOpacity>      
         </View> 
         <View style={styles.modalView}>
@@ -109,8 +113,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 30,
   },
-  labelhidden: {
-    opacity: 0,
+  listItem: {
+    marginBottom: 20,
+    backgroundColor: theme.colors.greyBackground,
+    borderRadius: 5,
+    padding: 10,
   },
 });
 
