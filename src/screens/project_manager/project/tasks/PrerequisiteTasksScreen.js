@@ -20,9 +20,9 @@ const PrerequisiteTasksScreen = () => {
 );
 
   const fetchTasks = async () => {
-    const fetchedTasks = await getAvailableTasks(project.id, task.id);
-    setTasks(fetchedTasks);
-    setFilteredTasks(fetchedTasks);
+      const fetchedTasks = await getAvailableTasks(project.id, task.id);
+      setTasks(fetchedTasks);
+      setFilteredTasks(fetchedTasks);
   };
 
   useEffect(() => {
@@ -41,10 +41,11 @@ const PrerequisiteTasksScreen = () => {
         } else {
             await deletePrerequisite(task.id, preReq.id);
         }
-        fetchTasks();
     } catch (error) {
-        console.error('Error in toggleSwitch:', error);
+      alert(error.message);
     }
+    
+    fetchTasks();
   };
 
   const renderItem = ({ item }) => (

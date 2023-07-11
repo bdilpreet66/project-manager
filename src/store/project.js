@@ -230,8 +230,35 @@ export const getWorkHistoryByProjectId = async (projectId) => {
   }
 };
 
+export const isIndirectDependency = async (taskId, prerequisiteTaskId) => {
+  let query = `SELECT prerequisite_task_id FROM Prerequisites WHERE task_id = ?`;
+  let params = [prerequisiteTaskId];
+
+  const results = await executeSql(query, params);
+
+  if (results.length > 0) {
+    for (let i = 0; i < results.length; i++) {
+      let row = results[i];
+      if (row.prerequisite_task_id === taskId) {
+        return true;
+      } else {
+        let indirect = await isIndirectDependency(taskId, row.prerequisite_task_id);
+        if (indirect) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
 export const createPrerequisite = async (taskId, prerequisiteTaskId) => {
   try {
+    if (await isIndirectDependency(taskId, prerequisiteTaskId)) {
+      throw new Error(`Task ID #${taskId} is an indirect dependency of Task ID #${prerequisiteTaskId}.`);
+    }
+
     let query = `INSERT INTO Prerequisites (task_id, prerequisite_task_id) VALUES (?, ?)`;
 
     await executeSql(query, [taskId, prerequisiteTaskId]);
