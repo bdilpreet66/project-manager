@@ -78,7 +78,7 @@ const ProjectListScreen = () => {
   const handleTaskView = async (task) => { 
     const prerequisitesData = await listIncompletePrerequisite(task.id);
     if (prerequisitesData.length > 0) {
-      Alert.alert('Message', 'This task is not allowed to view as it has incomplete pre-requisites.');
+      Alert.alert('Message', 'This task is not allowed to view as it has an incomplete pre-requisite.');
     }
     else {
       navigation.navigate('View Task', {task})
