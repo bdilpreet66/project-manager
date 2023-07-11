@@ -86,7 +86,7 @@ const ProjectListScreen = () => {
       </TouchableOpacity>
       <TextInput
         style={[commonStyles.input, styles.search]}        
-        placeholder="Search by email"
+        placeholder="Search by name"
         value={searchText}
         onChangeText={ setSearchText }
         onSubmitEditing={ handleSearch }
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginTop: 10, 
   },
   badge: {    
-    width: 85,
+    width: 100,
     textAlign: 'center',
     marginTop: 5,    
   },

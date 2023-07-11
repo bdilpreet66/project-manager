@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 10, 
   },
   badge: {    
-    width: 85,
+    width: 100,
     textAlign: 'center',
     marginTop: 5,    
   },

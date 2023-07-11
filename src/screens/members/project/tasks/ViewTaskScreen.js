@@ -87,6 +87,7 @@ const ViewTaskScreen = () => {
     await addTaskComment(comment, id);
     const results = await getTaskComments(task.id);
     setComments(results);
+    setComment('');
   }
 
   const onStartDateChange = (event, selectedDate) => {
@@ -214,12 +215,12 @@ const ViewTaskScreen = () => {
                 numberOfLines={4}
               />
               <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
-                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]} onPress={handleAddComment}>Add Comment</Text>
+                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>Add Comment</Text>
               </TouchableOpacity>
               <View>
                 {comments.map((item, index) => 
                   <View style={[styles.commentItem]} key={ index }>
-                    <Text>#{item.comment}</Text>
+                    <Text>{item.comment}</Text>
                     <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
                   </View>                  
                 )}

@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { getUserData } from "../../../store/creds";
 import { searchUsers, createUser } from "../../../store/user";
 import theme from '../../../theme/theme';
+import commonStyles from '../../../theme/commonStyles';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CreateMemberPage = () => {
   const navigation = useNavigation();
@@ -84,26 +86,36 @@ const CreateMemberPage = () => {
           <Text style={styles.buttonText}>Create</Text>
         </TouchableOpacity>
       </View>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Email"
-        autoCapitalize='none'
-        keyboardType='email-address'
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Password"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setHourlyRate}
-        value={hourlyRate}
-        placeholder="Hourly Rate"
-      />
+      <ScrollView>
+        <View style={commonStyles.inputContainer}>
+          <TextInput style={commonStyles.inputLabel}>Email</TextInput>
+          <TextInput
+            style={styles.input}
+            onChangeText={setEmail}
+            value={email}
+            autoCapitalize='none'
+            keyboardType='email-address'
+          />
+        </View>
+        <View style={commonStyles.inputContainer}>
+          <TextInput style={commonStyles.inputLabel}>Password</TextInput>
+          <TextInput
+            style={styles.input}
+            onChangeText={setPassword}
+            value={password}
+            autoCapitalize='none'
+          />
+        </View>
+        <View style={[commonStyles.inputContainer,{marginBottom:20}]}>
+          <TextInput style={commonStyles.inputLabel}>Hourly Rate</TextInput>
+          <TextInput
+            style={styles.input}
+            onChangeText={setHourlyRate}
+            value={hourlyRate}
+            keyboardType='decimal-pad'
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -111,7 +123,7 @@ const CreateMemberPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    //padding: 10,
     paddingTop: 35,
     backgroundColor: '#fff',
   },
@@ -134,7 +146,6 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.grey,
     borderRadius: 4,
     padding: 10,
-    marginBottom: 15,
   },
 });
 
