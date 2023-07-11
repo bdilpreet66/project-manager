@@ -455,3 +455,29 @@ export const createWorkedHour = async (workedHour) => {
   return executeSql(query, params);
 };
 
+
+export const calculateWorkedHour = async (id, user) => {
+  try{
+    // Calculate total cost
+    const totalCostQuery = `
+      SELECT 
+        SUM(Users.hourly_rate * WorkHours.hours) as totalCost
+      FROM 
+        WorkHours 
+      INNER JOIN 
+        Users ON WorkHours.recorded_by = ${user ? user : 'Users.email'}
+      WHERE 
+        WorkHours.task_id = ${id}
+      AND 
+        WorkHours.approved = 1`; // Include only approved work hours in total cost calculation
+
+    const totalCostResult = await executeSql(totalCostQuery, []);
+    const totalCost = (totalCostResult[0]?.totalCost || 0).toFixed(2);
+
+    return totalCost;
+  } catch (error) {
+    console.error('Error listing work hours:', error);
+    throw error;
+  }
+};
+

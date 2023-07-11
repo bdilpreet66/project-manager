@@ -18,7 +18,9 @@ const WorkHistoryModal = () => {
 
   useFocusEffect(useCallback(() => {
     const fetchWorkHistory = async () => {
-      await loadHours()
+        setWorkHistory([]);
+        setPage(1);
+        await loadHours();
     };
 
     fetchWorkHistory();
@@ -42,7 +44,7 @@ const WorkHistoryModal = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.listItem,(item.approved ? commonStyles.buttonSuccess : commonStyles.buttonError)]} >
+    <TouchableOpacity style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text>{item.recorded_by}</Text>
         <Text>$ {item.cost}</Text>

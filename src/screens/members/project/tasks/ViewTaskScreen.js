@@ -5,8 +5,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
-import { getAvailableUser }  from '../../../../store/user';
-import { updateTask, listPrerequisite, addTaskComment, getTaskComments } from '../../../../store/project';
+import { getUserData } from '../../../../store/creds';
+import { updateTask, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -24,8 +24,6 @@ const ViewTaskScreen = () => {
 
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [preReq, setRreReq] = useState([]);
   const [totalCost, serTotalCost] = useState('0.00');
 
   const [comment, setComment] = useState();
@@ -33,14 +31,10 @@ const ViewTaskScreen = () => {
  
   useFocusEffect(
     useCallback(() => {
-      const fetchPreReq = async () => {
-        const results = await listPrerequisite(task.id);
-        setRreReq(results);
-      };
-
-      const fetchUsers = async () => {
-        const results = await getAvailableUser();
-        setUsers(results);
+      const fetchTotalCost = async () => {
+        user = getUserData()
+        const results = await calculateWorkedHour(task.id, user.email);
+        serTotalCost(results);
       };
 
       const fetchComments = async () => {
@@ -48,9 +42,8 @@ const ViewTaskScreen = () => {
         setComments(results);
       };
 
-      fetchUsers();
-      fetchPreReq();
       fetchComments();
+      fetchTotalCost();
     }, [task])
   );
 
@@ -148,74 +141,35 @@ const ViewTaskScreen = () => {
         <View style={[commonStyles.container,styles.container]}>
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Name</Text>
-              <TextInput
-                  placeholder="Name"
-                  value={name}
-                  onChangeText={setName}
-                  style={commonStyles.input}
-              />
+              <Text>{name}</Text>
             </View>
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Description</Text>
-              <TextInput
-                  placeholder="Description"
-                  value={description}
-                  onChangeText={setDescription}
-                  multiline
-                  numberOfLines={4}
-                  style={[commonStyles.input,{ height: 140 }]}
-              />   
+              <Text>{description}</Text>
             </View>
             <View style={styles.inputContainer}>
-              <Text style={commonStyles.inputLabel}>Start Date</Text>
-              <TouchableOpacity onPress={() => setShowStartPicker(true)}>
-                  <TextInput
-                      placeholder="Start Date"
-                      value={startDate.toLocaleString()}
-                      editable={false}
-                      style={[commonStyles.input]}
-                  />
-                  {showStartPicker && (
-                    <DateTimePicker
-                      value={startDate}
-                      mode="datetime"
-                      display="default"
-                      onChange={onStartDateChange}
-                    />
-                  )}
-              </TouchableOpacity>
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={commonStyles.inputLabel}>End Date</Text>
-              <TouchableOpacity onPress={() => setShowEndPicker(true)}>
-                <TextInput
-                    placeholder="End Date"
-                    value={endDate.toLocaleString()}
-                    editable={false}
-                    style={[commonStyles.input]}
-                />
-                {showEndPicker && (
-                  <DateTimePicker
-                    value={endDate}
-                    mode="datetime"
-                    display="default"
-                    onChange={onEndDateChange}
-                  />
-                )}
-              </TouchableOpacity>
+              <View style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: "100%",
+              }}>
+                <Text style={commonStyles.inputLabel}>Start Date</Text>
+                <Text style={commonStyles.inputLabel}>End Date</Text>
+              </View>
+              <View style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: "100%",
+              }}>
+                <Text>{startDate.toLocaleString()}</Text>
+                <Text>{endDate.toLocaleString()}</Text>
+              </View>
             </View>
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Assigned To</Text>
-              <View style={styles.border}>
-                <Picker
-                  style={[commonStyles.input]}
-                  selectedValue={assignedTo}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setAssignedTo(itemValue)
-                  }>
-                  {users?.map((user, index) => <Picker.Item key={user.email} label={user.email} value={user.email} />)}
-                </Picker>
-              </View> 
+              <Text>{assignedTo}</Text>
             </View> 
             {task.status !== "overdue" && <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Status</Text>
@@ -242,7 +196,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Total Cost</Text>        
             </View>            
             <View style={[styles.staticContent]}>
-              <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+              <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
               <TouchableOpacity onPress={() => navigation.navigate('View Worked Hours', { task: task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
               </TouchableOpacity>
@@ -264,12 +218,11 @@ const ViewTaskScreen = () => {
               </TouchableOpacity>
               <View>
                 {comments.map((item, index) => 
-                <>
-                    <View style={[styles.commentItem]} key={ index }>
+                  <View style={[styles.commentItem]} key={ index }>
                     <Text>#{item.comment}</Text>
                     <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
                   </View>                  
-                </>)}
+                )}
               </View>                          
             </View>
             <View>            
