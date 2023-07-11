@@ -3,6 +3,7 @@ import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpa
 import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { getTasksByMember } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
+import { formatDate } from '../../../common/Date'
 
 
 const ProjectListScreen = () => {
@@ -48,6 +49,31 @@ const ProjectListScreen = () => {
     loadTasks();
   };
 
+  const statusBadge = (status) => {    
+    let badgeClass = commonStyles.badge;
+    let styles = [badgeClass];
+    
+    if (status === 'pending') {
+      styles.push(commonStyles.badgeWarning);
+    }
+    
+    if (status === 'completed') {
+      styles.push(commonStyles.badgeSuccess);
+    }
+    
+    if (status === 'in-progress') {
+      styles.push(commonStyles.badgeInfo);
+    }
+    
+    if (status === 'overdue') {
+      styles.push(commonStyles.badgeError);
+    }
+    
+    return (
+      <Text style={styles}>{status}</Text>
+    )
+  }
+
   const renderItem = ({ item }) => (   
     <View style={[{width: screenWidth},styles.listItem]}>
       <View style={{
@@ -64,7 +90,7 @@ const ProjectListScreen = () => {
           alignItems: 'center',
       }}>
         <Text>{statusBadge(item.status)}</Text>
-        <Text>{item.project_name}</Text>
+        <Text>Project - {item.project_name}</Text>
       </View>
     </View>    
   );
@@ -103,12 +129,9 @@ const styles = StyleSheet.create({
   container: {    
     alignItems: 'flex-start',    
     padding: 20,
-  },  
-  button: {
-    marginTop: 20,
-    marginBottom: 20,   
   },
   search: {
+    marginTop: 20,
     marginBottom: 10,
   },
   listItem: {

@@ -367,27 +367,30 @@ export const listWorkHours = async (page, id) => {
   }
 };
 
+
 export const getTasksByMember = async (page, searchText) => {
   try {
-    const offset = (page - 1) * 10; // Assuming each page shows 10 users
-    const limit = 10; // Number of users to fetch per page
+    const offset = (page - 1) * 10;
+    const limit = 10;
     user = await getUserData();
 
     let query = `SELECT Tasks.*, Projects.name as project_name FROM Tasks INNER JOIN Projects ON Projects.id = Tasks.project_id WHERE Tasks.assigned_to = '${user.email}'`;
     let params = [];
 
     if (searchText) {
-      query += ` AND Lower(Tasks.name) LIKE '%${searchText.toLowerCase()}%' OR Tasks.id = ${parseInt(searchText)}`; // Assuming you want to search by email
+      query += ` AND Lower(Tasks.name) LIKE '%${searchText.toLowerCase()}%'`;
+      
+      // Check if searchText can be parsed to an integer
+      if (!isNaN(parseInt(searchText))) {
+        query += ` OR Tasks.id = ${parseInt(searchText)}`;
+      }
     }
 
-    query += ' ORDER BY Tasks.end_date'; // Assuming you want to order by the user ID in descending order
+    query += ' ORDER BY Tasks.end_date';
     query += ` LIMIT ${limit} OFFSET ${offset}`;
 
-    console.log(query)
-    const results = await executeSql(query, params); // Execute the SQL query with parameters
-    console.log(results)
+    const results = await executeSql(query, params);
 
-    // Format the results as needed, assuming each result row is an object with properties matching the table columns
     const tasks = results.map((row) => ({
       id: row.id,
       name: row.name,
