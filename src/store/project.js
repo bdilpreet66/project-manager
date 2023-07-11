@@ -340,4 +340,42 @@ export const listWorkHours = async (page, id) => {
   }
 };
 
+export const getTasksByMember = async (page, searchText) => {
+  try {
+    const offset = (page - 1) * 10; // Assuming each page shows 10 users
+    const limit = 10; // Number of users to fetch per page
+    user = await getUserData();
 
+    let query = `SELECT Tasks.*, Projects.name as project_name FROM Tasks INNER JOIN Projects ON Projects.id = Tasks.project_id WHERE Tasks.assigned_to = '${user.email}'`;
+    let params = [];
+
+    if (searchText) {
+      query += ` AND Lower(Tasks.name) LIKE '%${searchText.toLowerCase()}%' OR Tasks.id = ${parseInt(searchText)}`; // Assuming you want to search by email
+    }
+
+    query += ' ORDER BY Tasks.end_date'; // Assuming you want to order by the user ID in descending order
+    query += ` LIMIT ${limit} OFFSET ${offset}`;
+
+    console.log(query)
+    const results = await executeSql(query, params); // Execute the SQL query with parameters
+    console.log(results)
+
+    // Format the results as needed, assuming each result row is an object with properties matching the table columns
+    const tasks = results.map((row) => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      start_date: row.start_date,
+      end_date: row.end_date,
+      assigned_to: row.assigned_to,
+      is_active: Boolean(row.is_active),
+      status: row.status,
+      project_name: row.project_name,
+    }));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error listing users:', error);
+    throw error;
+  }
+};
