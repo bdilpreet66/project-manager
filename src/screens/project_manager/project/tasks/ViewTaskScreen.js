@@ -100,6 +100,7 @@ const ViewTaskScreen = () => {
     await addTaskComment(comment, id);
     const results = await getTaskComments(task.id);
     setComments(results);
+    setComment('');
   }
 
   const onStartDateChange = (event, selectedDate) => {
@@ -283,7 +284,7 @@ const ViewTaskScreen = () => {
                 {comments.map((item, index) => 
                 <>
                     <View style={[styles.commentItem]} key={ index }>
-                    <Text>#{item.comment}</Text>
+                    <Text>{item.comment}</Text>
                     <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
                   </View>                  
                 </>)}
