@@ -18,7 +18,9 @@ const WorkHistoryModal = () => {
 
   useFocusEffect(useCallback(() => {
     const fetchWorkHistory = async () => {
-      await loadHours()
+        setWorkHistory([]);
+        setPage(1);
+        await loadHours();
     };
 
     fetchWorkHistory();
@@ -42,16 +44,28 @@ const WorkHistoryModal = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.listItem,(item.approved ? commonStyles.buttonSuccess : commonStyles.buttonDanger)]} >
+    <View style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text>{item.recorded_by}</Text>
-        <Text>{item.hours}h : {item.minutes}m</Text>
+        <Text>$ {item.cost}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Date: {item.recorded_date}</Text>
+          <Text>{item.hours}h : {item.minutes}m</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text></Text>
-          <Text></Text>
+          <Text>{item.approved ? "Approved" : "Needs Approval"}</Text>
       </View>
-    </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
+          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
+          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
   const renderFooter = () => {
@@ -108,6 +122,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     paddingHorizontal: 20,
     marginBottom: 30,
+  },
+  listItem: {
+    marginBottom: 20,
+    backgroundColor: theme.colors.greyBackground,
+    borderRadius: 5,
+    padding: 10,
   },
   labelhidden: {
     opacity: 0,

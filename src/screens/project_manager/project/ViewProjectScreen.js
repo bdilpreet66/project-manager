@@ -30,10 +30,10 @@ const ViewProjectScreen = () => {
       (async () => {
         const taskData = await getTasksByProject(project.id);
         setTasks(taskData);
-      })();
 
-      const totalCost = getProjectTotalCost(project.id).total_cost;    
-      serTotalCost(totalCost === undefined ? 0.00.toFixed(2) : totalCost);
+      const totalCost = await getProjectTotalCost(project.id);    
+      serTotalCost(totalCost);
+      })();
 
     }, [])
   );
@@ -118,7 +118,7 @@ const ViewProjectScreen = () => {
             <Text style={commonStyles.inputLabel}>Total Cost</Text>        
           </View>            
           <View style={[styles.staticContent]}>
-            <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+            <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
             </TouchableOpacity>            

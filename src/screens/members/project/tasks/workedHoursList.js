@@ -73,8 +73,8 @@ const WorkHistoryModal = () => {
                 <Text style={commonStyles.labelTopNav}>Cancel</Text>
             </TouchableOpacity>      
             <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
-            <TouchableOpacity>
-                <Text onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>Add</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>
+                <Text>Add</Text>
             </TouchableOpacity>      
         </View> 
         <View style={styles.modalView}>

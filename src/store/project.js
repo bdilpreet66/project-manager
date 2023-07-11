@@ -190,22 +190,6 @@ export const getTasksByProject = async (projectId) => {
   }
 };
 
-export const getProjectTotalCost = async (projectId) => {
-  try {
-    let query = `SELECT SUM(WorkHours.hours * Users.hourly_rate) AS total_cost
-    FROM Projects 
-    INNER JOIN Tasks ON Projects.id = Tasks.project_id 
-    INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
-    INNER JOIN Users ON WorkHours.recorded_by = Users.email 
-    WHERE Projects.id = ${projectId};`;
-    const results = await executeSql(query, []); 
-    return results;
-  } catch (error) {
-    console.log('Error calculating project cost.');
-    throw error;
-  }
-}
-
 export const getWorkHistoryByProjectId = async (projectId) => {
   try {
       let query = `
@@ -456,7 +440,7 @@ export const createWorkedHour = async (workedHour) => {
 };
 
 
-export const calculateWorkedHour = async (id, user) => {
+export const calculateWorkedHour = async (id, user = "") => {
   try{
     // Calculate total cost
     const totalCostQuery = `
@@ -472,12 +456,34 @@ export const calculateWorkedHour = async (id, user) => {
         WorkHours.approved = 1`; // Include only approved work hours in total cost calculation
 
     const totalCostResult = await executeSql(totalCostQuery, []);
-    const totalCost = (totalCostResult[0]?.totalCost || 0).toFixed(2);
+    const totalCost = totalCostResult[0]?.totalCost || 0;
 
-    return totalCost;
+    return totalCost.toFixed(2);
   } catch (error) {
     console.error('Error listing work hours:', error);
     throw error;
   }
 };
+
+export const getProjectTotalCost = async (projectId) => {
+  try {
+    let query = `SELECT id
+    FROM Tasks
+    WHERE project_id = ${projectId};`;
+    const results = await executeSql(query, []);
+    const tasksIds = results.map((row) => row.id); // Extract task ids into an array
+
+    let totalCost = 0;
+
+    for (let index = 0; index < tasksIds.length; index++) {
+      const element = tasksIds[index];
+      totalCost += parseFloat(await calculateWorkedHour(element))
+    }
+
+    return totalCost.toFixed(2);
+  } catch (error) {
+    console.log('Error calculating project cost.');
+    throw error;
+  }
+}
 

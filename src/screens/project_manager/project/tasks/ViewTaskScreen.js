@@ -6,7 +6,7 @@ import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser }  from '../../../../store/user';
-import { updateTask, listPrerequisite, addTaskComment, getTaskComments } from '../../../../store/project';
+import { updateTask, listPrerequisite, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -48,9 +48,15 @@ const ViewTaskScreen = () => {
         setComments(results);
       };
 
+      const fetchTotalCost = async () => {
+        const results = await calculateWorkedHour(task.id);
+        serTotalCost(results);
+      };
+
       fetchUsers();
       fetchPreReq();
       fetchComments();
+      fetchTotalCost();
     }, [task])
   );
 
@@ -242,7 +248,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Total Cost</Text>        
             </View>            
             <View style={[styles.staticContent]}>
-              <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+              <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Task Work History', { task: task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
               </TouchableOpacity>
