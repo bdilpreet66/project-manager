@@ -26,6 +26,8 @@ import PmEditMemberScreen from './screens/project_manager/members/EditMemberScre
 import MDashboardScreen from './screens/members/DashboardScreen';
 import MProjectListScreen from './screens/members/project/ProjectListScreen';
 import MViewTaskScreen from './screens/members/project/tasks/ViewTaskScreen';
+import MWorkedHourList from './screens/members/project/tasks/workedHoursList';
+import MAddWorkedHours from './screens/members/project/tasks/addWorkedHours';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -111,6 +113,8 @@ function MemberProjectStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Project List" component={MProjectListScreen} />
       <Stack.Screen name="View Task" component={MViewTaskScreen} />
+      <Stack.Screen name="View Worked Hours" component={MWorkedHourList} />
+      <Stack.Screen name="Add Worked Hours" component={MAddWorkedHours} />
     </Stack.Navigator>
   );
 }
