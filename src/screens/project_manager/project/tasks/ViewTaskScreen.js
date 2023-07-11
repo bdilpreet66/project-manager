@@ -12,13 +12,14 @@ const ViewTaskScreen = () => {
   const route = useRoute();
   const { project, task } = route.params;
   const navigation = useNavigation();
+  console.log(task)
   
   const [id, _] = useState(task.id);
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
   const [startDate, setStartDate] = useState(new Date(task.start_date));
   const [endDate, setEndDate] = useState(new Date(task.end_date));
-  const [assignedTo, setAssignedTo] = useState(task.assignedTo);
+  const [assignedTo, setAssignedTo] = useState(task.assigned_to);
   const [status, setStatus] = useState(task.status);
 
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -50,7 +51,7 @@ const ViewTaskScreen = () => {
       fetchUsers();
       fetchPreReq();
       fetchComments();
-    }, [])
+    }, [task])
   );
 
   const handleUpdateTask = async () => {
@@ -132,14 +133,6 @@ const ViewTaskScreen = () => {
     )
   }
 
-  const renderCommentItem = ({ item }) => (
-    <View style={{margin: 10, padding: 10, backgroundColor: '#eee'}}>
-      <Text>{item.comment}</Text>
-      <Text style={{fontSize: 12, color: 'grey'}}>Commented by: {item.commented_by}</Text>
-      <Text style={{fontSize: 12, color: 'grey'}}>Date: {item.comment_date}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.scroll}>
       <View style={styles.ctaContainer}> 
@@ -220,7 +213,7 @@ const ViewTaskScreen = () => {
                   onValueChange={(itemValue, itemIndex) =>
                     setAssignedTo(itemValue)
                   }>
-                  {users?.map((user, index) => <Picker.Item key={index} label={user.email} value={user.email} />)}
+                  {users?.map((user, index) => <Picker.Item key={user.email} label={user.email} value={user.email} />)}
                 </Picker>
               </View> 
             </View> 
