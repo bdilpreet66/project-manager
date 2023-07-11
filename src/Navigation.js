@@ -25,7 +25,6 @@ import PmEditMemberScreen from './screens/project_manager/members/EditMemberScre
 
 import MDashboardScreen from './screens/members/DashboardScreen';
 import MProjectListScreen from './screens/members/project/ProjectListScreen';
-import MViewProjectScreen from './screens/members/project/ViewProjectScreen';
 import MViewTaskScreen from './screens/members/project/tasks/ViewTaskScreen';
 
 const Stack = createStackNavigator();
@@ -111,7 +110,6 @@ function MemberProjectStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Project List" component={MProjectListScreen} />
-      <Stack.Screen name="View Project" component={MViewProjectScreen} />
       <Stack.Screen name="View Task" component={MViewTaskScreen} />
     </Stack.Navigator>
   );

@@ -75,7 +75,7 @@ const ProjectListScreen = () => {
   }
 
   const renderItem = ({ item }) => (   
-    <View style={[{width: screenWidth},styles.listItem]}>
+    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('View Task', { task: item })}>
       <View style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -92,7 +92,7 @@ const ProjectListScreen = () => {
         <Text>{statusBadge(item.status)}</Text>
         <Text>Project - {item.project_name}</Text>
       </View>
-    </View>    
+    </TouchableOpacity>    
   );
 
   const renderFooter = () => {
