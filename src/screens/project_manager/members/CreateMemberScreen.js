@@ -89,6 +89,8 @@ const CreateMemberPage = () => {
         onChangeText={setEmail}
         value={email}
         placeholder="Email"
+        autoCapitalize='none'
+        keyboardType='email-address'
       />
       <TextInput
         style={styles.input}

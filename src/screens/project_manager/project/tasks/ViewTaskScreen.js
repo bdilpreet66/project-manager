@@ -252,7 +252,7 @@ const ViewTaskScreen = () => {
             </View>            
             <View style={[styles.staticContent]}>
               <View style={[styles.prereqContainer]}>
-                {preReq.map((preitem) => <Text style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
+              {preReq.map((preitem, index) => <Text key={ index } style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
               </View>              
               <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { project, task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
@@ -274,9 +274,9 @@ const ViewTaskScreen = () => {
                 <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]} onPress={handleAddComment}>Add Comment</Text>
               </TouchableOpacity>
               <View>
-                {comments.map((item) => 
+                {comments.map((item, index) => 
                 <>
-                  <View style={[styles.commentItem]}>
+                    <View style={[styles.commentItem]} key={ index }>
                     <Text>#{item.comment}</Text>
                     <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
                   </View>                  

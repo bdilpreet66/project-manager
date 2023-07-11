@@ -40,7 +40,7 @@ const PmDashboardScreenOptions = {
 
 const ProjectManagerProjectStackOptions = {
   tabBarIcon: ({ color, size }) => (
-    <Ionicons name="briefcase" size={size} color={color} />
+    <Ionicons name="list-outline" size={size} color={color} />
   ),
 };
 
@@ -87,7 +87,7 @@ function MemberTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name="Dashboard" component={MDashboardScreen} options={PmDashboardScreenOptions} />
-        <Tab.Screen name="Projects" component={MemberProjectStack} options={ProjectManagerProjectStackOptions} />
+        <Tab.Screen name="Tasks" component={MemberProjectStack} options={ProjectManagerProjectStackOptions} />
         <Tab.Screen name="Logout" component={LogoutScreen} options={LogoutScreenOptions} />
     </Tab.Navigator>
   );
