@@ -140,11 +140,6 @@ const styles = StyleSheet.create({
     borderRadius: 5, 
     marginTop: 10, 
   },
-  badge: {    
-    width: 85,
-    textAlign: 'center',
-    marginTop: 5,    
-  },
 });
 
 export default ProjectListScreen;
