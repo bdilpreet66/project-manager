@@ -391,7 +391,7 @@ export const getTasksByMember = async (page, searchText) => {
     const limit = 10;
     user = await getUserData();
 
-    let query = `SELECT Tasks.*, Projects.name as project_name FROM Tasks INNER JOIN Projects ON Projects.id = Tasks.project_id LEFT OUTER JOIN Prerequisites ON Prerequisites.  WHERE Tasks.assigned_to = '${user.email}'`;
+    let query = `SELECT Tasks.*, Projects.name as project_name FROM Tasks INNER JOIN Projects ON Projects.id = Tasks.project_id WHERE Tasks.assigned_to = '${user.email}'`;
     let params = [];
 
     if (searchText) {
