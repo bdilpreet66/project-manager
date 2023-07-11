@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
+import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions, Modal, Alert  } from 'react-native';
 import { useNavigation, useFocusEffect  } from '@react-navigation/native';
-import { getTasksByMember } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
+import { getTasksByMember, listIncompletePrerequisite } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 import { formatDate } from '../../../common/Date'
-
+import theme from '../../../theme/theme';
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -13,6 +13,8 @@ const ProjectListScreen = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);  
+  //const [prerequisites, setPrerequisites] = useState([]);
+  //const [modalVisible, setModalVisible] = useState(false);
 
   const screenWidth = Dimensions.get('window').width - 40;
   
@@ -50,8 +52,7 @@ const ProjectListScreen = () => {
   };
 
   const statusBadge = (status) => {    
-    let badgeClass = commonStyles.badge;
-    let styles = [badgeClass];
+    let styles = [commonStyles.badge];
     
     if (status === 'pending') {
       styles.push(commonStyles.badgeWarning);
@@ -70,12 +71,24 @@ const ProjectListScreen = () => {
     }
     
     return (
-      <Text style={styles}>{status}</Text>
+      <><View style={styles}><Text style={ {color: theme.colors.white} }>{status}</Text></View></>
     )
   }
 
+  const handleTaskView = async (task) => { 
+    const prerequisitesData = await listIncompletePrerequisite(task.id);
+    if (prerequisitesData.length > 0) {
+      Alert.alert('Message', 'This task is not allowed to view as it has incomplete pre-requisites.');
+    }
+    else {
+      navigation.navigate('View Task', {task})
+     }
+    //setPrerequisites(prerequisitesData);
+    //setModalVisible(true);
+  }
+
   const renderItem = ({ item }) => (   
-    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('View Task', { task: item })}>
+    <TouchableOpacity style={[styles.listItem]} onPress={() => handleTaskView(item)}>
       <View style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -90,14 +103,13 @@ const ProjectListScreen = () => {
           alignItems: 'center',
       }}>
         <Text>{statusBadge(item.status)}</Text>
-        <Text>Project - {item.project_name}</Text>
+        <Text>{item.project_name}</Text>
       </View>
     </TouchableOpacity>    
   );
 
   const renderFooter = () => {
     if (!loading) return null;
-
     return <ActivityIndicator style={{ marginVertical: 20 }} />;
   };
 
@@ -112,22 +124,22 @@ const ProjectListScreen = () => {
         onChangeText={ setSearchText }
         onSubmitEditing={ handleSearch }
         returnKeyType="search"      
-      />  
+      />
       <FlatList
         data={tasks}
+        style={{width:"100%"}}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} // Assuming each member has a unique ID
         onEndReached={loadTasks} // Load more tasks when reaching the end of the list
         onEndReachedThreshold={0.1} // Trigger the onEndReached callback when 10% of the list is reached
         ListFooterComponent={renderFooter} // Show loading indicator at the bottom while loading more tasks
-      />       
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({  
-  container: {    
-    alignItems: 'flex-start',    
+  container: {       
     padding: 20,
   },
   search: {
@@ -135,7 +147,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   listItem: {
-    backgroundColor: '#F8F8F8', 
+    backgroundColor: '#F8F8F8',
+    width: "100%",
     padding: 10, 
     borderRadius: 5, 
     marginTop: 10, 

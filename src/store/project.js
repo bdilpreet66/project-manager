@@ -288,6 +288,26 @@ export const listPrerequisite = async (taskId) => {
   }
 };
 
+export const listIncompletePrerequisite = async (taskId) => {
+  try {
+    let query = `SELECT Prerequisites.* FROM Prerequisites INNER JOIN Tasks ON Tasks.id = Prerequisites.prerequisite_task_id WHERE Prerequisites.task_id = ${taskId} AND Tasks.status != 'completed'`;
+
+    const results = await executeSql(query, []);
+
+    let tasks = results.map((row) => ({
+      id: row.id,
+      prerequisite_task_id: row.prerequisite_task_id,
+    }));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error creating prerequisite:', error);
+    throw error;
+  }
+};
+
+
+
 export const deletePrerequisite = async (taskId, prerequisiteTaskId) => {
   try {
     let query = `DELETE FROM Prerequisites WHERE task_id = ? AND prerequisite_task_id = ?`;
