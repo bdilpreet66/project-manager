@@ -243,19 +243,8 @@ const ViewTaskScreen = () => {
             </View>            
             <View style={[styles.staticContent]}>
               <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Task Work History', { task: task })}>
+              <TouchableOpacity onPress={() => navigation.navigate('View Worked Hours', { task: task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={commonStyles.inputLabel}>Prerequisite</Text>        
-            </View>            
-            <View style={[styles.staticContent]}>
-              <View style={[styles.prereqContainer]}>
-              {preReq.map((preitem, index) => <Text key={ index } style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
-              </View>              
-              <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { task })}>
-                <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
