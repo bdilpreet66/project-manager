@@ -105,7 +105,7 @@ const ViewTaskScreen = () => {
   }
 
   const statusBadge = (status) => {
-    let styles = [commonStyles.inputLabel, commonStyles.badge, { width: 100, textAlign: 'center' }];
+    let styles = [commonStyles.inputLabel, commonStyles.badge, { width: 120, textAlign: 'center' }];
     
     if (status === 'pending') {
       styles.push(commonStyles.badgeWarning);
@@ -215,7 +215,7 @@ const ViewTaskScreen = () => {
                 numberOfLines={4}
               />
               <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
-                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>Add Comment</Text>
+                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>ADD COMMENT</Text>
               </TouchableOpacity>
               <View>
                 {comments.map((item, index) => 
@@ -311,6 +311,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     paddingLeft: 20,
     paddingRight: 20,
+    width: 100,
   },
   prereqContainer: {
     flexDirection: 'row',

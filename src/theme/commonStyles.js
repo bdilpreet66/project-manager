@@ -93,9 +93,11 @@ export default {
   },
   badge: {
     borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 4,
-    color: theme.colors.white,    
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    color: theme.colors.white, 
+    fontWeight: 400,
+    fontSize: 12,   
   },
   badgeDefault: {
     backgroundColor: theme.colors.black,
@@ -119,6 +121,7 @@ export default {
     fontSize: theme.fontSize.small,
   },
   labelTopNavHeading: {
-    fontSize: theme.fontSize.medium,
+    fontSize: 18,
+    fontWeight: 600,
   }
 }
