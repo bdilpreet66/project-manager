@@ -69,68 +69,81 @@ const EditMemberScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Ionicons name="close-outline" size={20} color={'green'} />
-      <Text style={commonStyles.labelTopNavHeading}>Edit Members</Text>
-      <Ionicons name="checkmark-outline" size={20} color={'green'} />
-      <View>
-        <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(!isHoursExpanded); setIsPasswordExpanded(false); } }>
-            <Text style={styles.tabText}>{isHoursExpanded ? 'Hide Hourly Rate' : 'Set Hourly Rate'}</Text>
-        </TouchableOpacity>
-        {isHoursExpanded && (
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Hours"
-              value={hours}
-              onChangeText={setHours}
-              keyboardType='decimal-pad'
-            />
-            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleSetHours}>
-              <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Save Rate</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      {/* Change Password Section */}
-      <View>
-        <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(false); setIsPasswordExpanded(!isPasswordExpanded); } }>
-            <Text style={styles.tabText}>{isPasswordExpanded ? 'Hide Password' : 'Change Password'}</Text>
-        </TouchableOpacity>
-        {isPasswordExpanded && (
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="New Password"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleChangePassword}>
-              <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Change Password</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-      {user.type != "admin" &&
-        (
-          <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.deleteButton]} onPress={handleDeleteUser}>
-            <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete User</Text>
+    <View>
+      <View style={styles.ctaContainer}> 
+        <TouchableOpacity onPress={() => navigation.navigate('Member List', )}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
+        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Edit Member</Text>
+        <Text></Text>
+      </View> 
+      <View style={styles.scroll}>
+        <View>
+          <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(!isHoursExpanded); setIsPasswordExpanded(false); } }>
+              <Text style={styles.tabText}>{isHoursExpanded ? 'Hide Hourly Rate' : 'Set Hourly Rate'}</Text>
           </TouchableOpacity>
-        )
-      }
-    </View>
+          {isHoursExpanded && (
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Hours"
+                value={hours}
+                onChangeText={setHours}
+                keyboardType='decimal-pad'
+              />
+              <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleSetHours}>
+                <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Save Rate</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* Change Password Section */}
+        <View>
+          <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(false); setIsPasswordExpanded(!isPasswordExpanded); } }>
+              <Text style={styles.tabText}>{isPasswordExpanded ? 'Hide Password' : 'Change Password'}</Text>
+          </TouchableOpacity>
+          {isPasswordExpanded && (
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="New Password"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleChangePassword}>
+                <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Change Password</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+        {user.type != "admin" &&
+          (
+            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.deleteButton]} onPress={handleDeleteUser}>
+              <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete User</Text>
+            </TouchableOpacity>
+          )
+        }
+      </View>
+    </View>    
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    paddingTop: 50,
-    backgroundColor: '#fff',
+  scroll: {
+    backgroundColor: theme.colors.white,
     height: "100%",
+    marginBottom: 90,    
+    paddingHorizontal: 20,
+  },
+  ctaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    paddingTop: 60,    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 15,        
   },
   heading: {
     fontSize: 24,

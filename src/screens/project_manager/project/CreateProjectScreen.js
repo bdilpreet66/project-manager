@@ -4,6 +4,7 @@ import commonStyles from '../../../theme/commonStyles';
 import theme from '../../../theme/theme';
 import { addProject } from '../../../store/project';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const CreateProjectScreen = () => { 
   const navigation = useNavigation(); 
@@ -36,12 +37,12 @@ const CreateProjectScreen = () => {
   return (
     <View style={styles.scroll}>
       <View style={styles.ctaContainer}> 
-        <TouchableOpacity onPress={() => navigation.navigate('Project List')}>
-          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Project List')}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
         </TouchableOpacity>      
         <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
-        <TouchableOpacity onPress={handleCreateProject}>
-          <Text style={commonStyles.labelTopNav}>Save</Text>
+        <TouchableOpacity onPress={handleCreateProject}>          
+          <Ionicons name="checkmark-outline" style={{color:'#34A654'}} size={36} />
         </TouchableOpacity>      
       </View> 
       <ScrollView> 
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',    
     paddingTop: 60,    
     backgroundColor: theme.colors.white,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,    
   },
   ctaButton: {    
     width: 'auto',    

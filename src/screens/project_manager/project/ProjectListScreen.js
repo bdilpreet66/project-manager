@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions  } from 'react-native';
-import { useNavigation, useFocusEffect  } from '@react-navigation/native';
+import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { listProjects } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 import theme from '../../../theme/theme';
@@ -13,32 +13,32 @@ const ProjectListScreen = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);  
+  const [page, setPage] = useState(1);
 
   const screenWidth = Dimensions.get('window').width - 40;
-  
+
   useFocusEffect(
     useCallback(() => {
       handleSearch();
       // return a cleanup function if necessary
-      return () => {};
+      return () => { };
     }, [])
   );
-  
+
   const loadProjects = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
-  
+
     try {
       const newProjects = await listProjects(page, searchText); // Fetch projects from the first page
-  
+
       setProjects((prevProjects) => [...prevProjects, ...newProjects]);
       setHasMore(newProjects.length > 0);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading projects:', error);
     }
-  
+
     setLoading(false);
   };
 
@@ -50,24 +50,24 @@ const ProjectListScreen = () => {
     loadProjects();
   };
 
-  const renderItem = ({ item }) => (    
-    <TouchableOpacity style={[{width: screenWidth},styles.listItem]} onPress={() => navigation.navigate('View Project', { project: item })}>
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={[{ width: screenWidth }, styles.listItem]} onPress={() => navigation.navigate('View Project', { project: item })}>
       <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
       }}>
         <Text>{item.id}# {item.name}</Text>
-        {item.status == "complete" ? 
-          <Text>Completed: {item.completion_date}</Text> : 
+        {item.status == "complete" ?
+          <Text>Completed: {item.completion_date}</Text> :
           <Text>Incomplete</Text>
         }
       </View>
       <View>
-        {item.status == "pending" ? 
-        <Text style={[commonStyles.badge,commonStyles.badgeWarning,styles.badge]}>{item.status}</Text> : 
-        <Text style={[commonStyles.badge,commonStyles.badgeDefault,styles.badge]}>{item.status}</Text>
-        }        
+        {item.status == "pending" ?
+          <Text style={[commonStyles.badge, commonStyles.badgeWarning, styles.badge]}>{item.status}</Text> :
+          <Text style={[commonStyles.badge, commonStyles.badgeDefault, styles.badge]}>{item.status}</Text>
+        }
       </View>
     </TouchableOpacity>
   );
@@ -79,13 +79,19 @@ const ProjectListScreen = () => {
   };
 
   return (
-    <View style={[commonStyles.container,styles.container]}>
-      <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
+    <View style={[commonStyles.container, styles.container]}>
+      <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain' />
       <Text style={commonStyles.heading}>Project Management</Text>
-      <Text>Create and modify your Projects</Text>
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Project')}>
-        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Project</Text>
+      <Text>Create and modify your projects.</Text>      
+      <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.button]} onPress={() => navigation.navigate('Create Project')}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
+          <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>
+            Create Project
+          </Text>
+          <Ionicons name="add-circle-outline" style={{marginLeft:10,color:theme.colors.white}} size={24} />
+        </View>
       </TouchableOpacity>
+
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -104,20 +110,20 @@ const ProjectListScreen = () => {
         onEndReached={loadProjects} // Load more projects when reaching the end of the list
         onEndReachedThreshold={0.1} // Trigger the onEndReached callback when 10% of the list is reached
         ListFooterComponent={renderFooter} // Show loading indicator at the bottom while loading more projects
-      />       
+      />
     </View>
   );
 };
 
-const styles = StyleSheet.create({  
-  container: {    
-    alignItems: 'flex-start',    
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'flex-start',
     padding: 20,
-  },  
+  },
   button: {
     marginTop: 20,
-    marginBottom: 20,   
-  },  
+    marginBottom: 20,
+  },
   searchContainer: {
     backgroundColor: theme.colors.greyBackground,
     flexDirection: 'row',
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   searchInput: {
-    paddingHorizontal: 12,    
+    paddingHorizontal: 12,
     paddingVertical: 10,
     minWidth: "88%"
   },
@@ -139,22 +145,23 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.grey,
     padding: 10,
   },
-  icon: {    
+  icon: {
     width: 20,
     height: 15,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   listItem: {
-    backgroundColor: '#F8F8F8', 
-    padding: 10, 
-    borderRadius: 5, 
-    marginTop: 10, 
+    backgroundColor: '#F8F8F8',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
-  badge: {    
+  badge: {
     width: 100,
     textAlign: 'center',
-    marginTop: 5,    
+    marginTop: 5,
   },
+  
 });
 
 export default ProjectListScreen;

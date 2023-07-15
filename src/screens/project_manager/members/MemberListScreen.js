@@ -78,9 +78,14 @@ const MemberListScreen = () => {
     <View style={[commonStyles.container,styles.container]}>
       <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
       <Text style={commonStyles.heading}>Member Management</Text>
-      <Text>Create and modify your team member</Text>      
-      <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Member')}>
-        <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Member</Text>
+      <Text>Create and modify your team member.</Text>      
+      <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.button]} onPress={() => navigation.navigate('Create Member')}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
+          <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>
+            Create Member
+          </Text>
+          <Ionicons name="add-circle-outline" style={{marginLeft:10,color:theme.colors.white}} size={24} />
+        </View>
       </TouchableOpacity>
       <View style={styles.searchContainer}>
         <TextInput

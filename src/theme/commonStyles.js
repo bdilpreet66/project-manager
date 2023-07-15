@@ -54,8 +54,7 @@ export default {
     backgroundColor: theme.colors.red,    
   },
   buttonText: {    
-    textAlign: 'center', // Center the text inside the button
-    fontWeight: theme.fontWeight.bold,
+    textAlign: 'center', // Center the text inside the button    
   },
   buttonTextPrimary: {
     color: theme.colors.white,

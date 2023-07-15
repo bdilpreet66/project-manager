@@ -6,6 +6,7 @@ import { searchUsers, createUser } from "../../../store/user";
 import theme from '../../../theme/theme';
 import commonStyles from '../../../theme/commonStyles';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 const CreateMemberPage = () => {
   const navigation = useNavigation();
@@ -71,21 +72,16 @@ const CreateMemberPage = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',  
-          marginTop: 30,
-        }}>
-        <TouchableOpacity style={styles.buttons} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-        <Text style={styles.heading}>Create Member</Text>
-        <TouchableOpacity style={styles.buttons} onPress={handleSave}>
-          <Text style={styles.buttonText}>Create</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.scroll}>      
+      <View style={styles.ctaContainer}> 
+        <TouchableOpacity onPress={handleCancel}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
+        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Create Member</Text>
+        <TouchableOpacity onPress={handleSave}>          
+          <Ionicons name="checkmark-outline" style={{color:'#34A654'}} size={36} />
+        </TouchableOpacity>      
+      </View> 
       <ScrollView>
         <View style={commonStyles.inputContainer}>
           <TextInput style={commonStyles.inputLabel}>Email</TextInput>
@@ -121,11 +117,10 @@ const CreateMemberPage = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //padding: 10,
-    paddingTop: 35,
-    backgroundColor: '#fff',
+  scroll: {
+    backgroundColor: theme.colors.white,
+    height: "100%",
+    marginBottom: 90
   },
   heading: {
     fontSize: 24,
@@ -146,6 +141,14 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.grey,
     borderRadius: 4,
     padding: 10,
+  },
+  ctaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    paddingTop: 60,    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 10,
   },
 });
 
