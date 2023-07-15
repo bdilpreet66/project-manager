@@ -94,6 +94,7 @@ const Login = ({navigation}) => {
 
 const styles = StyleSheet.create({    
   passwordContainer: {
+    backgroundColor: theme.colors.greyBackground,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -109,6 +110,8 @@ const styles = StyleSheet.create({
     minWidth: "88%"
   },
   iconContainer: {
+    borderLeftWidth: 1,
+    borderColor: theme.colors.grey,
     padding: 10,
   },
   icon: {    

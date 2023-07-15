@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '100%',
     alignSelf: 'center',
+    backgroundColor: theme.colors.greyBackground,
   },
   passwordInput: {    
     minWidth: "88%",
@@ -140,6 +141,8 @@ const styles = StyleSheet.create({
     fontSize: theme.fontWeight.medium,
   },
   iconContainer: {
+    borderLeftWidth: 1,
+    borderColor: theme.colors.grey,
     padding: 10,
   },
   icon: {
