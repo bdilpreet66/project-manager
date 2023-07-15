@@ -75,7 +75,7 @@ const ViewTaskScreen = () => {
 
     console.log("GO: ")
     // Create a new task object
-    const task = {
+    const data = {
       id: id,
       name: name,
       description: description,
@@ -83,11 +83,12 @@ const ViewTaskScreen = () => {
       end_date: endDate.toISOString(),
       assigned_to: assignedTo,
       status: status,
+      project_id: task.project_id,
     };
 
     try {
       // Create the task in the database
-      await updateTask(task);
+      await updateTask(data);
       alert("Task has been updated!")
     } catch (error) {
       // Handle or display error if something goes wrong

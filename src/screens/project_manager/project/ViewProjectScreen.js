@@ -49,24 +49,27 @@ const ViewProjectScreen = () => {
     }
   };
 
-  const statusBadge = (status) => {    
+  const statusBadge = (status, end) => {    
     let badgeClass = commonStyles.badge;
     let styles = [badgeClass];
-    
-    if (status === 'pending') {
-      styles.push(commonStyles.badgeWarning);
+
+    if ((new Date(end)) > (new Date())){    
+      if (status === 'pending') {
+        styles.push(commonStyles.badgeWarning);
+      }
+      
+      if (status === 'in-progress') {
+        styles.push(commonStyles.badgeInfo);
+      }
+    } else {
+      styles.push(commonStyles.badgeError);
+      if (status !== 'completed'){
+        status = "overdue"
+      }
     }
-    
+      
     if (status === 'completed') {
       styles.push(commonStyles.badgeSuccess);
-    }
-    
-    if (status === 'in-progress') {
-      styles.push(commonStyles.badgeInfo);
-    }
-    
-    if (status === 'overdue') {
-      styles.push(commonStyles.badgeError);
     }
     
     return (
@@ -147,7 +150,7 @@ const ViewProjectScreen = () => {
                   <Text>Due: {formatDate(item.end_date)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {statusBadge(item.status)}
+                    {statusBadge(item.status, item.end_date)}
                     <Text>{item.assigned_to}</Text>
                 </View>
               </TouchableOpacity>

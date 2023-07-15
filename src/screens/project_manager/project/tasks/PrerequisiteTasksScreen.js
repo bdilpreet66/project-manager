@@ -25,10 +25,6 @@ const PrerequisiteTasksScreen = () => {
       setFilteredTasks(fetchedTasks);
   };
 
-  useEffect(() => {
-    filterTasks(search);
-  }, [search]);
-
   const filterTasks = (query) => {
     const filtered = tasks.filter(task => task.name.toLowerCase().includes(query.toLowerCase()));
     setFilteredTasks(filtered);

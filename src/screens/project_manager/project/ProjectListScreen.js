@@ -25,16 +25,16 @@ const ProjectListScreen = () => {
     }, [])
   );
   
-  const loadProjects = async () => {
+  const loadProjects = async (cur_page = page) => {
     if (loading || !hasMore) return;
     setLoading(true);
   
     try {
-      const newProjects = await listProjects(page, searchText); // Fetch projects from the first page
+      const newProjects = await listProjects(cur_page, searchText); // Fetch projects from the first page
   
       setProjects((prevProjects) => [...prevProjects, ...newProjects]);
       setHasMore(newProjects.length > 0);
-      setPage((prevPage) => prevPage + 1);
+      setPage(cur_page + 1);
     } catch (error) {
       console.error('Error loading projects:', error);
     }
@@ -47,7 +47,7 @@ const ProjectListScreen = () => {
     setPage(1);
     setProjects([]);
     setHasMore(true);
-    loadProjects();
+    loadProjects(1);
   };
 
   const renderItem = ({ item }) => (    
@@ -101,7 +101,7 @@ const ProjectListScreen = () => {
         data={projects}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} // Assuming each member has a unique ID
-        onEndReached={loadProjects} // Load more projects when reaching the end of the list
+        onEndReached={() => {loadProjects()}} // Load more projects when reaching the end of the list
         onEndReachedThreshold={0.1} // Trigger the onEndReached callback when 10% of the list is reached
         ListFooterComponent={renderFooter} // Show loading indicator at the bottom while loading more projects
       />       
