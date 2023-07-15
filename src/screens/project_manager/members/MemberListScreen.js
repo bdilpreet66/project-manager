@@ -23,17 +23,18 @@ const MemberListScreen = () => {
     }, [])
   );
 
-  const loadMembers = async () => {
+  const loadMembers = async (cur_page = page) => {
     if (loading || !hasMore) return;
 
     setLoading(true);
 
     try {
-      const users = await listUsers(page, searchText); // Fetch members using the 'listUsers' function
+      console.log(cur_page)
+      const users = await listUsers(cur_page, searchText); // Fetch members using the 'listUsers' function
 
       setMembers((prevMembers) => [...prevMembers, ...users]);
       setHasMore(users.length > 0);
-      setPage((prevPage) => prevPage + 1);
+      setPage(cur_page + 1);
     } catch (error) {
       console.error('Error loading members:', error);
     }
@@ -46,7 +47,7 @@ const MemberListScreen = () => {
     setPage(1);
     setMembers([]);
     setHasMore(true);
-    loadMembers();
+    loadMembers(1);
   };
 
   const renderItem = ({ item }) => (    
@@ -102,7 +103,7 @@ const MemberListScreen = () => {
         data={members}
         renderItem={renderItem}
         keyExtractor={(item) => item.email.toString()} // Assuming each member has a unique ID
-        onEndReached={loadMembers} // Load more members when reaching the end of the list
+        onEndReached={() => {loadMembers()}} // Load more members when reaching the end of the list
         onEndReachedThreshold={0.1} // Trigger the onEndReached callback when 10% of the list is reached
         ListFooterComponent={renderFooter} // Show loading indicator at the bottom while loading more members
       />       

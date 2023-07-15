@@ -3,7 +3,8 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity }
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
-import { listWorkHours } from '../../../../store/project'
+import { listWorkHours, approveWorkHour, deleteWorkHours } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const WorkHistoryModal = () => {
   const route = useRoute();
@@ -20,22 +21,23 @@ const WorkHistoryModal = () => {
     const fetchWorkHistory = async () => {
         setWorkHistory([]);
         setPage(1);
+        setHasMore(true);
         await loadHours();
     };
 
     fetchWorkHistory();
   }, []));
   
-  const loadHours = async () => {
+  const loadHours = async (cur_page = page) => {
     if (loading || !hasMore) return;
     setLoading(true);
   
     try {
-      const newHours = await listWorkHours(page, task.id); // Fetch projects from the first page
+      const newHours = await listWorkHours(cur_page, task.id); // Fetch projects from the first page
   
       setWorkHistory((prevProjects) => [...prevProjects, ...newHours]);
       setHasMore(newHours.length > 0);
-      setPage((prevPage) => prevPage + 1);
+      setPage(cur_page + 1);
     } catch (error) {
       console.error('Error loading projects:', error);
     }
@@ -43,27 +45,56 @@ const WorkHistoryModal = () => {
     setLoading(false);
   };
 
+  const approveHours = async (id) => {
+    setHasMore(true);
+    setPage(1);
+    setWorkHistory([]);
+    await approveWorkHour(id);
+    await loadHours(1);
+  }
+
+  const deleteHours = async (id) => {
+    setWorkHistory([]);
+    setPage(1);
+    setHasMore(true);
+    await deleteWorkHours(id);
+    await loadHours(1);
+  }
+
   const renderItem = ({ item }) => (
-    <View style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
+    <View style={[styles.listItem]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text>{item.recorded_by}</Text>
-        <Text>$ {item.cost}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text>Date: {item.recorded_date}</Text>
+          <Text>Time Recorded</Text>
           <Text>{item.hours}h : {item.minutes}m</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text></Text>
-          <Text>{item.approved ? "Approved" : "Needs Approval"}</Text>
+          <Text>Date Recorded</Text>
+          <Text>{item.recorded_date}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
-          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Approve</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
-          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete</Text>
-        </TouchableOpacity>
+          <Text>Total Cost</Text>
+          <Text>$ {item.cost}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text>Added By</Text>
+        <Text>{item.recorded_by}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 25 }}>
+        {item.approved ? (
+          <>
+            <TouchableOpacity onPress={() => {deleteHours(item.id)}}>
+              <Ionicons name="trash" size={24} color="red" />
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text>Approved</Text>
+              <Ionicons name="ios-checkmark-circle" size={24} color="green" />
+            </View>
+          </>
+        ) : (
+          <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.button]} onPress={() => {approveHours(item.id)}}>
+            <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Approve</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

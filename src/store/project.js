@@ -156,9 +156,32 @@ export const updateTask = async (task) => {
       task.status,
       task.id,
     ];
-
-    console.log(query)
     await executeSql(query, params);
+
+    // Fetch all tasks associated with the same project_id
+    const tasks = await executeSql('SELECT * FROM Tasks WHERE project_id = ?', [task.project_id]);
+    // Check the status of all tasks
+    let allCompleted = true;
+    let anyInProgress = false;
+    for (let task of tasks) {
+      if (task.status !== 'completed') {
+        allCompleted = false;
+      }
+      if (task.status !== 'pending') {
+        anyInProgress = true;
+      }
+    }
+
+    // Update project status based on task statuses
+    let projectStatus;
+    if (allCompleted) {
+      projectStatus = 'completed';
+    } else if (anyInProgress) {
+      projectStatus = 'in-progress';
+    } else {
+      projectStatus = 'pending';
+    }
+    await executeSql('UPDATE Projects SET status = ? WHERE id = ?', [projectStatus, task.project_id]);
   } catch (error) {
     console.error('Error creating task:', error);
     throw error;
@@ -180,7 +203,8 @@ export const getTasksByProject = async (projectId) => {
       start_date: row.start_date,
       assigned_to: row.assigned_to,
       status: row.status,
-      description: row.description
+      description: row.description,
+      project_id: row.project_id,
     }));    
 
     return tasks;
@@ -487,3 +511,14 @@ export const getProjectTotalCost = async (projectId) => {
   }
 }
 
+export const approveWorkHour = async (id) => {
+  const sql = "UPDATE WorkHours SET approved = 1 WHERE id = ?";
+  const params = [id];
+  await executeSql(sql, params);
+};
+
+export const deleteWorkHours = async (id) => {
+  const sql = "UPDATE WorkHours SET approved = 0 WHERE id = ?";
+  const params = [id];
+  await executeSql(sql, params);
+};
