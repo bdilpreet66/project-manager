@@ -17,7 +17,7 @@ const LogoutScreen = () => {
   return (
     <View style={styles.container}>
       <Image source={require('../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain' />
-      <Image source={require('../../assets/logout.png')} style={styles.splashImage} resizeMode='cover' />
+      <Image source={require('../../assets/logout.png')} style={styles.splashImage} resizeMode='contain' />
       <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]} onPress={handleLogout}>
         <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Log Out</Text>
       </TouchableOpacity>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 10, // You might want some padding to ensure the items are not stuck to the edges of the screen
   },
   splashImage: {
-    width: Dimensions.get('window').width,
+    width: "100%",
     flex: 1,
   },
   button: {

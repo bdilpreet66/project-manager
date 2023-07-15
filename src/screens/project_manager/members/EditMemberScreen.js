@@ -4,6 +4,7 @@ import { useNavigation,useRoute } from '@react-navigation/native';
 import { updateHours, updatePassword, deleteUser } from "../../../store/user";
 import theme from '../../../theme/theme';
 import commonStyles from '../../../theme/commonStyles';
+import { Ionicons } from '@expo/vector-icons';
 
 const EditMemberScreen = () => {
   const route = useRoute();
@@ -69,9 +70,10 @@ const EditMemberScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Edit Members</Text>
+      <Ionicons name="close-outline" size={20} color={'green'} />
+      <Text style={commonStyles.labelTopNavHeading}>Edit Members</Text>
+      <Ionicons name="checkmark-outline" size={20} color={'green'} />
       <View>
-
         <TouchableOpacity style={styles.tabs} onPress={ () => { setIsHoursExpanded(!isHoursExpanded); setIsPasswordExpanded(false); } }>
             <Text style={styles.tabText}>{isHoursExpanded ? 'Hide Hourly Rate' : 'Set Hourly Rate'}</Text>
         </TouchableOpacity>
@@ -82,6 +84,7 @@ const EditMemberScreen = () => {
               placeholder="Hours"
               value={hours}
               onChangeText={setHours}
+              keyboardType='decimal-pad'
             />
             <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary, styles.buttonOverride]} onPress={handleSetHours}>
               <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary]}>Save Rate</Text>

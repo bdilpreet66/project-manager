@@ -25,8 +25,9 @@ import PmEditMemberScreen from './screens/project_manager/members/EditMemberScre
 
 import MDashboardScreen from './screens/members/DashboardScreen';
 import MProjectListScreen from './screens/members/project/ProjectListScreen';
-import MViewProjectScreen from './screens/members/project/ViewProjectScreen';
 import MViewTaskScreen from './screens/members/project/tasks/ViewTaskScreen';
+import MWorkedHourList from './screens/members/project/tasks/workedHoursList';
+import MAddWorkedHours from './screens/members/project/tasks/addWorkedHours';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,7 +41,7 @@ const PmDashboardScreenOptions = {
 
 const ProjectManagerProjectStackOptions = {
   tabBarIcon: ({ color, size }) => (
-    <Ionicons name="briefcase" size={size} color={color} />
+    <Ionicons name="list-outline" size={size} color={color} />
   ),
 };
 
@@ -87,7 +88,7 @@ function MemberTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name="Dashboard" component={MDashboardScreen} options={PmDashboardScreenOptions} />
-        <Tab.Screen name="Projects" component={MemberProjectStack} options={ProjectManagerProjectStackOptions} />
+        <Tab.Screen name="Tasks" component={MemberProjectStack} options={ProjectManagerProjectStackOptions} />
         <Tab.Screen name="Logout" component={LogoutScreen} options={LogoutScreenOptions} />
     </Tab.Navigator>
   );
@@ -111,8 +112,9 @@ function MemberProjectStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Project List" component={MProjectListScreen} />
-      <Stack.Screen name="View Project" component={MViewProjectScreen} />
       <Stack.Screen name="View Task" component={MViewTaskScreen} />
+      <Stack.Screen name="View Worked Hours" component={MWorkedHourList} />
+      <Stack.Screen name="Add Worked Hours" component={MAddWorkedHours} />
     </Stack.Navigator>
   );
 }

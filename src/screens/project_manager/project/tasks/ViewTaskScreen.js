@@ -6,19 +6,20 @@ import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser }  from '../../../../store/user';
-import { updateTask, listPrerequisite, addTaskComment, getTaskComments } from '../../../../store/project';
+import { updateTask, listPrerequisite, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
   const { project, task } = route.params;
   const navigation = useNavigation();
+  console.log(task)
   
   const [id, _] = useState(task.id);
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
   const [startDate, setStartDate] = useState(new Date(task.start_date));
   const [endDate, setEndDate] = useState(new Date(task.end_date));
-  const [assignedTo, setAssignedTo] = useState(task.assignedTo);
+  const [assignedTo, setAssignedTo] = useState(task.assigned_to);
   const [status, setStatus] = useState(task.status);
 
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -47,10 +48,16 @@ const ViewTaskScreen = () => {
         setComments(results);
       };
 
+      const fetchTotalCost = async () => {
+        const results = await calculateWorkedHour(task.id);
+        serTotalCost(results);
+      };
+
       fetchUsers();
       fetchPreReq();
       fetchComments();
-    }, [])
+      fetchTotalCost();
+    }, [task])
   );
 
   const handleUpdateTask = async () => {
@@ -93,6 +100,7 @@ const ViewTaskScreen = () => {
     await addTaskComment(comment, id);
     const results = await getTaskComments(task.id);
     setComments(results);
+    setComment('');
   }
 
   const onStartDateChange = (event, selectedDate) => {
@@ -131,14 +139,6 @@ const ViewTaskScreen = () => {
       <Text style={styles}>{status}</Text>
     )
   }
-
-  const renderCommentItem = ({ item }) => (
-    <View style={{margin: 10, padding: 10, backgroundColor: '#eee'}}>
-      <Text>{item.comment}</Text>
-      <Text style={{fontSize: 12, color: 'grey'}}>Commented by: {item.commented_by}</Text>
-      <Text style={{fontSize: 12, color: 'grey'}}>Date: {item.comment_date}</Text>
-    </View>
-  );
 
   return (
     <View style={styles.scroll}>
@@ -220,7 +220,7 @@ const ViewTaskScreen = () => {
                   onValueChange={(itemValue, itemIndex) =>
                     setAssignedTo(itemValue)
                   }>
-                  {users?.map((user, index) => <Picker.Item key={index} label={user.email} value={user.email} />)}
+                  {users?.map((user, index) => <Picker.Item key={user.email} label={user.email} value={user.email} />)}
                 </Picker>
               </View> 
             </View> 
@@ -249,7 +249,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Total Cost</Text>        
             </View>            
             <View style={[styles.staticContent]}>
-              <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+              <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Task Work History', { task: task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
               </TouchableOpacity>
@@ -259,7 +259,7 @@ const ViewTaskScreen = () => {
             </View>            
             <View style={[styles.staticContent]}>
               <View style={[styles.prereqContainer]}>
-                {preReq.map((preitem) => <Text style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
+              {preReq.map((preitem, index) => <Text key={ index } style={[commonStyles.badge, commonStyles.badgeGrey,styles.badge]}>#{preitem.prerequisite_task_id}</Text>)}
               </View>              
               <TouchableOpacity onPress={() => navigation.navigate('Pre Req Task', { project, task })}>
                 <Text style={[commonStyles.link,commonStyles.underline]}>Update Prerequisites</Text>
@@ -268,7 +268,7 @@ const ViewTaskScreen = () => {
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Comments</Text>        
             </View>            
-            <View style={[styles.staticContent,styles.commentContainer]}>              
+            <View style={[styles.staticContent,styles.commentContainer]}>            
               <TextInput
                 placeholder="Write a comment"
                 value={comment}
@@ -277,14 +277,17 @@ const ViewTaskScreen = () => {
                 multiline
                 numberOfLines={4}
               />
-              <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
-                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]} onPress={handleAddComment}>Add Comment</Text>
-              </TouchableOpacity>
+              <View style={{alignItems: 'center',flexDirection:'row',justifyContent:'space-between'}}>
+                <Text></Text>
+                <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
+                  <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>Add Comment</Text>
+                </TouchableOpacity>
+              </View>
               <View>
-                {comments.map((item) => 
+                {comments.map((item, index) => 
                 <>
-                  <View style={[styles.commentItem]}>
-                    <Text>#{item.comment}</Text>
+                    <View style={[styles.commentItem]} key={ index }>
+                    <Text>{item.comment}</Text>
                     <Text style={[styles.commentAudit]}>{item.commented_by} | {item.comment_date}</Text>
                   </View>                  
                 </>)}

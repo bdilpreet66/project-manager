@@ -190,22 +190,6 @@ export const getTasksByProject = async (projectId) => {
   }
 };
 
-export const getProjectTotalCost = async (projectId) => {
-  try {
-    let query = `SELECT SUM(WorkHours.hours * Users.hourly_rate) AS total_cost
-    FROM Projects 
-    INNER JOIN Tasks ON Projects.id = Tasks.project_id 
-    INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
-    INNER JOIN Users ON WorkHours.recorded_by = Users.email 
-    WHERE Projects.id = ${projectId};`;
-    const results = await executeSql(query, []); 
-    return results;
-  } catch (error) {
-    console.log('Error calculating project cost.');
-    throw error;
-  }
-}
-
 export const getWorkHistoryByProjectId = async (projectId) => {
   try {
       let query = `
@@ -230,8 +214,35 @@ export const getWorkHistoryByProjectId = async (projectId) => {
   }
 };
 
+export const isIndirectDependency = async (taskId, prerequisiteTaskId) => {
+  let query = `SELECT prerequisite_task_id FROM Prerequisites WHERE task_id = ?`;
+  let params = [prerequisiteTaskId];
+
+  const results = await executeSql(query, params);
+
+  if (results.length > 0) {
+    for (let i = 0; i < results.length; i++) {
+      let row = results[i];
+      if (row.prerequisite_task_id === taskId) {
+        return true;
+      } else {
+        let indirect = await isIndirectDependency(taskId, row.prerequisite_task_id);
+        if (indirect) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
 export const createPrerequisite = async (taskId, prerequisiteTaskId) => {
   try {
+    if (await isIndirectDependency(taskId, prerequisiteTaskId)) {
+      throw new Error(`Task ID #${taskId} is an indirect dependency of Task ID #${prerequisiteTaskId}.`);
+    }
+
     let query = `INSERT INTO Prerequisites (task_id, prerequisite_task_id) VALUES (?, ?)`;
 
     await executeSql(query, [taskId, prerequisiteTaskId]);
@@ -260,6 +271,26 @@ export const listPrerequisite = async (taskId) => {
     throw error;
   }
 };
+
+export const listIncompletePrerequisite = async (taskId) => {
+  try {
+    let query = `SELECT Prerequisites.* FROM Prerequisites INNER JOIN Tasks ON Tasks.id = Prerequisites.prerequisite_task_id WHERE Prerequisites.task_id = ${taskId} AND Tasks.status != 'completed'`;
+
+    const results = await executeSql(query, []);
+
+    let tasks = results.map((row) => ({
+      id: row.id,
+      prerequisite_task_id: row.prerequisite_task_id,
+    }));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error creating prerequisite:', error);
+    throw error;
+  }
+};
+
+
 
 export const deletePrerequisite = async (taskId, prerequisiteTaskId) => {
   try {
@@ -315,10 +346,21 @@ export const listWorkHours = async (page, id) => {
     const offset = (page - 1) * 10; // Assuming each page shows 10 work hours records
     const limit = 10; // Number of work hours records to fetch per page
 
-    let query = `SELECT * FROM WorkHours WHERE task_id = ${id}`;
+    let query = `
+      SELECT 
+        WorkHours.*, 
+        Users.hourly_rate,
+        (Users.hourly_rate * WorkHours.hours) + (Users.hourly_rate * WorkHours.minutes / 60) as cost
+      FROM 
+        WorkHours 
+      INNER JOIN 
+        Users ON WorkHours.recorded_by = Users.email 
+      WHERE 
+        WorkHours.task_id = ${id}`;
+      
     let params = [];
     
-    query += ' ORDER BY recorded_date DESC'; // Assuming you want to order by the recorded date in descending order
+    query += ' ORDER BY WorkHours.recorded_date DESC'; // Assuming you want to order by the recorded date in descending order
     query += ` LIMIT ${limit} OFFSET ${offset}`;
     
     const results = await executeSql(query, params); // Execute the SQL query with parameters
@@ -331,6 +373,7 @@ export const listWorkHours = async (page, id) => {
       recorded_date: row.recorded_date,
       approved: row.approved,
       recorded_by: row.recorded_by,
+      cost: row.cost,
     }));
 
     return workHours;
@@ -340,4 +383,107 @@ export const listWorkHours = async (page, id) => {
   }
 };
 
+
+
+export const getTasksByMember = async (page, searchText) => {
+  try {
+    const offset = (page - 1) * 10;
+    const limit = 10;
+    user = await getUserData();
+
+    let query = `SELECT Tasks.*, Projects.name as project_name FROM Tasks INNER JOIN Projects ON Projects.id = Tasks.project_id WHERE Tasks.assigned_to = '${user.email}'`;
+    let params = [];
+
+    if (searchText) {
+      query += ` AND Lower(Tasks.name) LIKE '%${searchText.toLowerCase()}%'`;
+      
+      // Check if searchText can be parsed to an integer
+      if (!isNaN(parseInt(searchText))) {
+        query += ` OR Tasks.id = ${parseInt(searchText)}`;
+      }
+    }
+
+    query += ' ORDER BY Tasks.end_date';
+    query += ` LIMIT ${limit} OFFSET ${offset}`;
+
+    const results = await executeSql(query, params);
+
+    const tasks = results.map((row) => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      start_date: row.start_date,
+      end_date: row.end_date,
+      assigned_to: row.assigned_to,
+      is_active: Boolean(row.is_active),
+      status: row.status,
+      project_name: row.project_name,
+    }));
+
+    return tasks;
+  } catch (error) {
+    console.error('Error listing users:', error);
+    throw error;
+  }
+};
+
+
+export const createWorkedHour = async (workedHour) => {
+  const { hours, minutes, recorded_date, approved, task_id } = workedHour;
+
+  user = await getUserData();
+  
+  const query = `INSERT INTO WorkHours (hours, minutes, recorded_date, approved, task_id, recorded_by) VALUES (?, ?, ?, ?, ?, ?)`;
+  const params = [hours, minutes, recorded_date, approved, task_id, user.email];
+
+  return executeSql(query, params);
+};
+
+
+export const calculateWorkedHour = async (id, user = "") => {
+  try{
+    // Calculate total cost
+    const totalCostQuery = `
+      SELECT 
+        SUM(Users.hourly_rate * WorkHours.hours) as totalCost
+      FROM 
+        WorkHours 
+      INNER JOIN 
+        Users ON WorkHours.recorded_by = ${user ? user : 'Users.email'}
+      WHERE 
+        WorkHours.task_id = ${id}
+      AND 
+        WorkHours.approved = 1`; // Include only approved work hours in total cost calculation
+
+    const totalCostResult = await executeSql(totalCostQuery, []);
+    const totalCost = totalCostResult[0]?.totalCost || 0;
+
+    return totalCost.toFixed(2);
+  } catch (error) {
+    console.error('Error listing work hours:', error);
+    throw error;
+  }
+};
+
+export const getProjectTotalCost = async (projectId) => {
+  try {
+    let query = `SELECT id
+    FROM Tasks
+    WHERE project_id = ${projectId};`;
+    const results = await executeSql(query, []);
+    const tasksIds = results.map((row) => row.id); // Extract task ids into an array
+
+    let totalCost = 0;
+
+    for (let index = 0; index < tasksIds.length; index++) {
+      const element = tasksIds[index];
+      totalCost += parseFloat(await calculateWorkedHour(element))
+    }
+
+    return totalCost.toFixed(2);
+  } catch (error) {
+    console.log('Error calculating project cost.');
+    throw error;
+  }
+}
 

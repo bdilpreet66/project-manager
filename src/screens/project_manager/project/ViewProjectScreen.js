@@ -6,6 +6,7 @@ import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../
 import theme from '../../../theme/theme';
 import { formatDate } from '../../../common/Date';
 import WorkHistoryModal from './WorkHistoryModal';
+import { Ionicons } from '@expo/vector-icons';
 
 const ViewProjectScreen = () => {
   const route = useRoute();
@@ -30,10 +31,10 @@ const ViewProjectScreen = () => {
       (async () => {
         const taskData = await getTasksByProject(project.id);
         setTasks(taskData);
-      })();
 
-      const totalCost = getProjectTotalCost(project.id).total_cost;    
-      serTotalCost(totalCost === undefined ? 0.00.toFixed(2) : totalCost);
+      const totalCost = await getProjectTotalCost(project.id);    
+      serTotalCost(totalCost);
+      })();
 
     }, [])
   );
@@ -118,7 +119,7 @@ const ViewProjectScreen = () => {
             <Text style={commonStyles.inputLabel}>Total Cost</Text>        
           </View>            
           <View style={[styles.staticContent]}>
-            <Text style={[commonStyles.inputLabel]}>{totalCost}</Text>
+            <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
             </TouchableOpacity>            
@@ -130,10 +131,10 @@ const ViewProjectScreen = () => {
           />
         </View>   
         
-        <View style={styles.ctaContainer}>
-          <Text style={commonStyles.bold}>Task List</Text>
-          <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Task',{ project: projectData } )}>
-            <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Task</Text>
+        <View style={styles.taskHeaderContainer}>
+          <Text style={[commonStyles.bold]}>Task List</Text>
+          <TouchableOpacity style={[]} onPress={() => navigation.navigate('Create Task',{ project: projectData } )}>
+            <Text style={[styles.createTaskButton]}>Create Task <Ionicons name="add-circle-outline" size={16}/></Text>
           </TouchableOpacity>  
         </View>
 
@@ -164,15 +165,21 @@ const styles = StyleSheet.create({
     padding: 20
   },  
   button: {
-    marginTop: 20,
-    marginBottom: 20,
     width: 'auto',
-    position: 'absolute',
-    right: 20,
-    bottom: 0,    
+    paddingVertical: 10,    
+    marginBottom: 0,
+
   }, 
   inputContainer: {
     marginTop: 20,
+  },
+  taskHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 20,
+    marginTop: 30,
   },
   ctaContainer: {
     flexDirection: 'row',
@@ -201,7 +208,7 @@ const styles = StyleSheet.create({
     display: 'flex',
   },
   status:{
-    width: 100,
+    width: 130,
     textAlign: 'center',
   },
   listItem: {
@@ -216,8 +223,16 @@ const styles = StyleSheet.create({
     marginBottom: 90
   },
   taskList: {
+    marginTop: 0,
     padding: 20,
   },
+  createTaskButton: {
+    backgroundColor: theme.colors.primary,
+    color: theme.colors.white,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+  }
 });
 
 export default ViewProjectScreen;

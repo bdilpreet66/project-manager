@@ -44,7 +44,7 @@ const WorkHistoryModal = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
+    <TouchableOpacity style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text>{item.recorded_by}</Text>
         <Text>$ {item.cost}</Text>
@@ -57,15 +57,7 @@ const WorkHistoryModal = () => {
           <Text></Text>
           <Text>{item.approved ? "Approved" : "Needs Approval"}</Text>
       </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
-          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Approve</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[commonStyles.button, commonStyles.buttonError, styles.button]}>
-          <Text style={[commonStyles.buttonText, commonStyles.buttonTexError]}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderFooter = () => {
@@ -81,8 +73,8 @@ const WorkHistoryModal = () => {
                 <Text style={commonStyles.labelTopNav}>Cancel</Text>
             </TouchableOpacity>      
             <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
-            <TouchableOpacity>
-                <Text style={styles.labelhidden}>Cancel</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>
+                <Text>Add</Text>
             </TouchableOpacity>      
         </View> 
         <View style={styles.modalView}>
@@ -128,9 +120,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.greyBackground,
     borderRadius: 5,
     padding: 10,
-  },
-  labelhidden: {
-    opacity: 0,
   },
 });
 
