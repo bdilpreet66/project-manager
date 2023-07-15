@@ -3,6 +3,8 @@ import { View, Text, TextInput, FlatList, ActivityIndicator, Image, TouchableOpa
 import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { listProjects } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
+import theme from '../../../theme/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const ProjectListScreen = () => {
@@ -84,14 +86,17 @@ const ProjectListScreen = () => {
       <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.button]} onPress={() => navigation.navigate('Create Project')}>
         <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Create Project</Text>
       </TouchableOpacity>
-      <TextInput
-        style={[commonStyles.input, styles.search]}        
-        placeholder="Search by email"
-        value={searchText}
-        onChangeText={ setSearchText }
-        onSubmitEditing={ handleSearch }
-        returnKeyType="search"      
-      />  
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          autoCapitalize='none'
+          onChangeText={setSearchText}
+          value={searchText}
+        />
+        <TouchableOpacity style={styles.iconContainer} onPress={handleSearch}>
+          <Ionicons name="search" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={projects}
         renderItem={renderItem}
@@ -112,9 +117,32 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     marginBottom: 20,   
+  },  
+  searchContainer: {
+    backgroundColor: theme.colors.greyBackground,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.grey,
+    borderRadius: 5,
+    width: '100%',
+    alignSelf: 'center',
   },
-  search: {
-    marginBottom: 10,
+  searchInput: {
+    paddingHorizontal: 12,    
+    paddingVertical: 10,
+    minWidth: "88%"
+  },
+  iconContainer: {
+    borderLeftWidth: 1,
+    borderColor: theme.colors.grey,
+    padding: 10,
+  },
+  icon: {    
+    width: 20,
+    height: 15,
+    alignSelf: 'center', 
   },
   listItem: {
     backgroundColor: '#F8F8F8', 
