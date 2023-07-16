@@ -5,6 +5,7 @@ import { getTasksByMember, listIncompletePrerequisite } from '../../../store/pro
 import commonStyles from '../../../theme/commonStyles';
 import { formatDate } from '../../../common/Date'
 import theme from '../../../theme/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -12,9 +13,7 @@ const ProjectListScreen = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);  
-  //const [prerequisites, setPrerequisites] = useState([]);
-  //const [modalVisible, setModalVisible] = useState(false);
+  const [page, setPage] = useState(1);
 
   const screenWidth = Dimensions.get('window').width - 40;
   
@@ -26,18 +25,19 @@ const ProjectListScreen = () => {
     }, [])
   );
   
-  const loadTasks = async () => {
+  const loadTasks = async (cur_page = page) => {
     if (loading || !hasMore) return;
     setLoading(true);
   
     try {
-      const newTasks = await getTasksByMember(page, searchText); // Fetch tasks from the first page
+      const newTasks = await getTasksByMember(cur_page, searchText); // Fetch tasks from the first page
   
       setTasks((prevTasks) => [...prevTasks, ...newTasks]);
       setHasMore(newTasks.length > 0);
-      setPage((prevPage) => prevPage + 1);
+      setPage(cur_page + 1);
     } catch (error) {
       console.error('Error loading tasks:', error);
+      setHasMore(false);
     }
   
     setLoading(false);
@@ -45,33 +45,38 @@ const ProjectListScreen = () => {
 
   const handleSearch = async () => {
     // Reset pagination and load tasks based on the search text
+    console.log("test")
     setPage(1);
     setTasks([]);
     setHasMore(true);
-    loadTasks();
+    loadTasks(1);
   };
 
-  const statusBadge = (status) => {    
-    let styles = [commonStyles.badge];
-    
-    if (status === 'pending') {
-      styles.push(commonStyles.badgeWarning);
+  const statusBadge = (status, end) => {    
+    let badgeClass = commonStyles.badge;
+    let styles = [badgeClass];
+
+    if ((new Date(end)) > (new Date())){    
+      if (status === 'pending') {
+        styles.push(commonStyles.badgeWarning);
+      }
+      
+      if (status === 'in-progress') {
+        styles.push(commonStyles.badgeInfo);
+      }
+    } else {
+      styles.push(commonStyles.badgeError);
+      if (status !== 'completed'){
+        status = "overdue"
+      }
     }
-    
+      
     if (status === 'completed') {
       styles.push(commonStyles.badgeSuccess);
     }
     
-    if (status === 'in-progress') {
-      styles.push(commonStyles.badgeInfo);
-    }
-    
-    if (status === 'overdue') {
-      styles.push(commonStyles.badgeError);
-    }
-    
     return (
-      <><View style={styles}><Text style={ {color: theme.colors.white} }>{status}</Text></View></>
+      <Text style={styles}>{status}</Text>
     )
   }
 
@@ -83,8 +88,6 @@ const ProjectListScreen = () => {
     else {
       navigation.navigate('View Task', {task})
      }
-    //setPrerequisites(prerequisitesData);
-    //setModalVisible(true);
   }
 
   const renderItem = ({ item }) => (   
@@ -102,7 +105,7 @@ const ProjectListScreen = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
       }}>
-        <Text>{statusBadge(item.status)}</Text>
+        <Text>{statusBadge(item.status, item.end_date)}</Text>
         <Text>{item.project_name}</Text>
       </View>
     </TouchableOpacity>    
@@ -117,14 +120,17 @@ const ProjectListScreen = () => {
     <View style={[commonStyles.container,styles.container]}>
       <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
       <Text style={commonStyles.heading}>My Tasks</Text>
-      <TextInput
-        style={[commonStyles.input, styles.search]}        
-        placeholder="Search by tasks"
-        value={searchText}
-        onChangeText={ setSearchText }
-        onSubmitEditing={ handleSearch }
-        returnKeyType="search"      
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          autoCapitalize='none'
+          onChangeText={setSearchText}
+          value={searchText}
+        />
+        <TouchableOpacity style={styles.iconContainer} onPress={handleSearch}>
+          <Ionicons name="search" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={tasks}
         style={{width:"100%"}}
@@ -142,9 +148,31 @@ const styles = StyleSheet.create({
   container: {       
     padding: 20,
   },
-  search: {
-    marginTop: 20,
-    marginBottom: 10,
+  searchContainer: {
+    backgroundColor: theme.colors.greyBackground,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.grey,
+    borderRadius: 5,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  searchInput: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    minWidth: "88%"
+  },
+  iconContainer: {
+    borderLeftWidth: 1,
+    borderColor: theme.colors.grey,
+    padding: 10,
+  },
+  icon: {
+    width: 20,
+    height: 15,
+    alignSelf: 'center',
   },
   listItem: {
     backgroundColor: '#F8F8F8',

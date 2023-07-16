@@ -188,6 +188,46 @@ export const updateTask = async (task) => {
   }
 };
 
+export const updateTaskStatus = async (id, status, project) => {
+  try {
+    let query = 'UPDATE Tasks SET status = ? WHERE id = ?';
+    const params = [
+      status,
+      id
+    ];
+    await executeSql(query, params);
+
+    console.log("task updated", project)
+    // Fetch all tasks associated with the same project_id
+    const tasks = await executeSql('SELECT * FROM Tasks WHERE project_id = ?', [project]);
+    // Check the status of all tasks
+    let allCompleted = true;
+    let anyInProgress = false;
+    for (let task of tasks) {
+      if (task.status !== 'completed') {
+        allCompleted = false;
+      }
+      if (task.status !== 'pending') {
+        anyInProgress = true;
+      }
+    }
+
+    // Update project status based on task statuses
+    let projectStatus;
+    if (allCompleted) {
+      projectStatus = 'completed';
+    } else if (anyInProgress) {
+      projectStatus = 'in-progress';
+    } else {
+      projectStatus = 'pending';
+    }
+    await executeSql('UPDATE Projects SET status = ? WHERE id = ?', [projectStatus, project]);
+  } catch (error) {
+    console.error('Error creating task:', error);
+    throw error;
+  }
+}
+
 
 export const getTasksByProject = async (projectId) => {
   try {
@@ -450,6 +490,7 @@ export const getTasksByMember = async (page, searchText) => {
       is_active: Boolean(row.is_active),
       status: row.status,
       project_name: row.project_name,
+      project_id: row.project_id,
     }));
 
     return tasks;

@@ -3,7 +3,8 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity }
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
-import { listWorkHours } from '../../../../store/project'
+import { listWorkHours } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const WorkHistoryModal = () => {
   const route = useRoute();
@@ -44,20 +45,43 @@ const WorkHistoryModal = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.listItem,(!item.approved && commonStyles.buttonError)]} >
+    <View style={[styles.listItem]} >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text>{item.recorded_by}</Text>
-        <Text>$ {item.cost}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text>Date: {item.recorded_date}</Text>
+          <Text>Time Recorded</Text>
           <Text>{item.hours}h : {item.minutes}m</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text></Text>
-          <Text>{item.approved ? "Approved" : "Needs Approval"}</Text>
+          <Text>Date Recorded</Text>
+          <Text>{item.recorded_date}</Text>
       </View>
-    </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Total Cost</Text>
+          <Text>$ {item.cost}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text>Added By</Text>
+        <Text>{item.recorded_by}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 25 }}>
+        {item.approved ? (
+          <>
+            <Text></Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text>Approved</Text>
+              <Ionicons name="ios-checkmark-circle" size={24} color="green" />
+            </View>
+          </>
+        ) : (
+          <>
+            <Text></Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text>Needs Approval</Text>
+              <Ionicons name="ios-close-circle" size={24} color="red" />
+            </View>
+          </>
+        )}
+      </View>
+    </View>
   );
 
   const renderFooter = () => {
