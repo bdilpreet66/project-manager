@@ -221,10 +221,18 @@ export const getWorkHistoryByProjectId = async (projectId) => {
               Tasks.id AS task_id,
               Tasks.name AS task_name,
               Tasks.assigned_to,
-              WorkHours.recorded_date
+              WorkHours.recorded_date,
+              WorkHours.hours,
+              WorkHours.minutes,
+              WorkHours.recorded_date,
+              WorkHours.recorded_by,
+              (Users.hourly_rate * WorkHours.hours) + (Users.hourly_rate * WorkHours.minutes / 60) as cost
           FROM Tasks 
-          INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
-          WHERE Tasks.project_id = ?
+          INNER JOIN 
+            WorkHours ON Tasks.id = WorkHours.task_id
+          INNER JOIN 
+            Users ON WorkHours.recorded_by = Users.email
+          WHERE Tasks.project_id = ? AND WorkHours.approved = 1
           ORDER BY WorkHours.recorded_date DESC`;
 
       let params = [projectId];

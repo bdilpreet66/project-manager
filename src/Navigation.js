@@ -14,6 +14,7 @@ import PmDashboardScreen from './screens/project_manager/DashboardScreen';
 import PmProjectListScreen from './screens/project_manager/project/ProjectListScreen';
 import PmCreateProjectScreen from './screens/project_manager/project/CreateProjectScreen';
 import PmViewProjectScreen from './screens/project_manager/project/ViewProjectScreen';
+import PmHistoryScreen from './screens/project_manager/project/WorkHistoryModal';
 import PmCreateTaskScreen from './screens/project_manager/project/tasks/CreateTaskScreen';
 import PmViewTaskScreen from './screens/project_manager/project/tasks/ViewTaskScreen';
 import PmPreReqTaskScreen from './screens/project_manager/project/tasks/PrerequisiteTasksScreen';
@@ -100,6 +101,7 @@ function ProjectManagerProjectStack() {
         <Stack.Screen name="Project List" component={PmProjectListScreen} />
         <Stack.Screen name="Create Project" component={PmCreateProjectScreen} />
         <Stack.Screen name="View Project" component={PmViewProjectScreen} />
+        <Stack.Screen name="Work History" component={PmHistoryScreen} />
         <Stack.Screen name="Create Task" component={PmCreateTaskScreen} />
         <Stack.Screen name="View Task" component={PmViewTaskScreen} />
         <Stack.Screen name="Pre Req Task" component={PmPreReqTaskScreen} />

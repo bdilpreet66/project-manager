@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { getWorkHistoryByProjectId } from './../../../store/project';
 import commonStyles from '../../../theme/commonStyles';
+import theme from '../../../theme/theme';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const WorkHistoryModal = ({ projectId, modalVisible, setModalVisible }) => {
+const WorkHistoryModal = () => {
+  const navigation = useNavigation();
+  const routes = useRoute();
+  const { projectId } = routes.params;
   const [workHistory, setWorkHistory] = useState([]);
 
   useEffect(() => {
@@ -18,66 +23,80 @@ const WorkHistoryModal = ({ projectId, modalVisible, setModalVisible }) => {
   }, [projectId]);
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text>Task ID: {item.task_id}</Text>
-      <Text>Task Name: {item.task_name}</Text>
-      <Text>Assigned To: {item.assigned_to}</Text>
-      <Text>Recorded Date: {item.recorded_date}</Text>
+    <View style={[styles.listItem]} >
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Time Recorded</Text>
+          <Text>{item.hours}h : {item.minutes}m</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Date Recorded</Text>
+          <Text>{item.recorded_date}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text>Total Cost</Text>
+          <Text>$ {item.cost}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text>Added By</Text>
+        <Text>{item.recorded_by}</Text>
+      </View>
     </View>
   );
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Work History</Text>
-            <FlatList
-                data={workHistory}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.task_id.toString()}
-            />            
-            <TouchableOpacity style={[commonStyles.button, commonStyles.buttonPrimary]} onPress={() => setModalVisible(false)}>
-                <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary]}>Close</Text>
-            </TouchableOpacity>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.ctaContainer}> 
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={commonStyles.labelTopNav}>Cancel</Text>
+          </TouchableOpacity>      
+          <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
+          <TouchableOpacity>
+              <Text style={styles.labelhidden}>Cancel</Text>
+          </TouchableOpacity>      
+      </View> 
+      <View style={styles.modalView}>
+          <FlatList
+              data={workHistory}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.task_id.toString()}
+          />   
       </View>
-    </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  modalTitle: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontSize: 18,
+    padding: 10,
+    backgroundColor: theme.colors.white,
   },
   itemContainer: {
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: theme.colors.greyBackground,
+    borderRadius: 5,
     padding: 10,
-    marginVertical: 5,
+  },
+  ctaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',    
+    paddingTop: 60,    
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  listItem: {
+    marginBottom: 20,
+    backgroundColor: theme.colors.greyBackground,
+    borderRadius: 5,
+    padding: 10,
+  },
+  labelhidden: {
+    opacity: 0,
   },
 });
 
