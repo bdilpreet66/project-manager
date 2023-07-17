@@ -143,8 +143,8 @@ const ViewProjectScreen = () => {
 
         <View style={styles.taskList}>
           {tasks.map(
-            (item) => (    
-              <TouchableOpacity style={[styles.listItem]} onPress={() => navigation.navigate('View Task', { project: project, task: item })}>
+            (item,key) => (    
+              <TouchableOpacity key={key} style={[styles.listItem]} onPress={() => navigation.navigate('View Task', { project: project, task: item })}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text>{item.id}# {item.name}</Text>
                   <Text>Due: {formatDate(item.end_date)}</Text>
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
-  }
+  },
 });
 
 export default ViewProjectScreen;

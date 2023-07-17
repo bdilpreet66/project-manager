@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Platform, ScrollView, Alert } from 'react-native';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
@@ -7,6 +7,7 @@ import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser }  from '../../../../store/user';
 import { updateTask, listPrerequisite, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -89,11 +90,11 @@ const ViewTaskScreen = () => {
     try {
       // Create the task in the database
       await updateTask(data);
-      alert("Task has been updated!")
+      Alert.alert("Success", "Task has been updated.");
     } catch (error) {
       // Handle or display error if something goes wrong
       console.error(error);
-      alert('Error', 'There was an error while creating the task.');
+      Alert.alert('Error', 'There was an error while creating the task.');
     }
   }
 
@@ -143,15 +144,17 @@ const ViewTaskScreen = () => {
 
   return (
     <View style={styles.scroll}>
+      
       <View style={styles.ctaContainer}> 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
         </TouchableOpacity>      
         <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Task Details</Text>
-        <TouchableOpacity onPress={handleUpdateTask}>
-          <Text style={commonStyles.labelTopNav}>Save</Text>
+        <TouchableOpacity onPress={handleUpdateTask}>          
+          <Ionicons name="checkmark-outline" style={{color:'#34A654'}} size={36} />
         </TouchableOpacity>      
       </View> 
+      
       <ScrollView> 
         <View style={[commonStyles.container,styles.container]}>
             <View style={styles.inputContainer}>
@@ -281,7 +284,9 @@ const ViewTaskScreen = () => {
               <View style={{alignItems: 'center',flexDirection:'row',justifyContent:'space-between'}}>
                 <Text></Text>
                 <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
-                  <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>Add Comment</Text>
+                <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary, { fontWeight: 400 }]} onPress={handleAddComment}>
+                  ADD COMMENT <Ionicons name="add-circle-outline" size={16}/>
+                </Text>
                 </TouchableOpacity>
               </View>
               <View>
@@ -324,7 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',    
     paddingTop: 60,    
     backgroundColor: theme.colors.white,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   ctaButton: {    
     width: 'auto',    

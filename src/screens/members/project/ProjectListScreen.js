@@ -116,7 +116,7 @@ const ProjectListScreen = () => {
   return (
     <View style={[commonStyles.container,styles.container]}>
       <Image source={require('../../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
-      <Text style={commonStyles.heading}>My Tasks</Text>
+      <Text style={[commonStyles.heading, { textAlign: 'left' }]}>My Tasks</Text>
       <TextInput
         style={[commonStyles.input, styles.search]}        
         placeholder="Search by tasks"
@@ -141,6 +141,7 @@ const ProjectListScreen = () => {
 const styles = StyleSheet.create({  
   container: {       
     padding: 20,
+    alignItems: 'flex-start',
   },
   search: {
     marginTop: 20,

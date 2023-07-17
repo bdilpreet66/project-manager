@@ -61,7 +61,6 @@ const ViewTaskScreen = () => {
       return;
     }
 
-    console.log("GO: ")
     // Create a new task object
     const task = {
       id: id,
@@ -218,7 +217,9 @@ const ViewTaskScreen = () => {
               <View style={{alignItems: 'center',flexDirection:'row',justifyContent:'space-between'}}>
                 <Text></Text>
                 <TouchableOpacity style={[commonStyles.button,commonStyles.buttonPrimary,styles.buttonComment]}>
-                  <Text style={[commonStyles.buttonText,commonStyles.buttonTextPrimary,{fontWeight:400}]} onPress={handleAddComment}>ADD COMMENT</Text>
+                <Text style={[commonStyles.buttonText, commonStyles.buttonTextPrimary, { fontWeight: 400 }]} onPress={handleAddComment}>
+                  ADD COMMENT <Ionicons name="add-circle-outline" size={16}/>
+                </Text>
                 </TouchableOpacity>
               </View>
               <View>

@@ -4,6 +4,7 @@ import { navigation, useRoute, useFocusEffect, useNavigation } from '@react-navi
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { getAvailableTasks, createPrerequisite, deletePrerequisite } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const PrerequisiteTasksScreen = () => {
   const route = useRoute();
@@ -56,18 +57,17 @@ const PrerequisiteTasksScreen = () => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.ctaContainer}> 
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={commonStyles.labelTopNav}>Cancel</Text>
-            </TouchableOpacity>      
-            <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Prerequisites</Text>
-            <TouchableOpacity>
-                <Text style={styles.labelhidden}>Cancel</Text>
-            </TouchableOpacity>      
-        </View> 
+      <View style={styles.ctaContainer}> 
+        <TouchableOpacity onPress={() => navigation.goBack()}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
+        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Prerequisites</Text>
+        <Text></Text>     
+      </View> 
+      <View style={{paddingHorizontal:20,}}>
         <TextInput
             style={commonStyles.input}
-            placeholder="Search tasks..."
+            placeholder="Search tasks"
             value={search}
             onChangeText={setSearch}
         />
@@ -76,6 +76,7 @@ const PrerequisiteTasksScreen = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
         />
+      </View>
     </View>
   );
 };
@@ -83,7 +84,6 @@ const PrerequisiteTasksScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: theme.colors.white,
   },
   itemContainer: {
@@ -101,12 +101,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',    
     paddingTop: 60,    
     backgroundColor: theme.colors.white,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,    
     marginBottom: 30,
   },
   labelhidden: {
     opacity: 0,
-  }
+  },
 });
 
 export default PrerequisiteTasksScreen;

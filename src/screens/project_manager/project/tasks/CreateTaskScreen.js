@@ -7,6 +7,7 @@ import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser } from '../../../../store/user';
 import { createTask } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const CreateTaskScreen = () => {
   const route = useRoute();
@@ -88,13 +89,13 @@ const CreateTaskScreen = () => {
   return (
     <View style={styles.scroll}>
       <View style={styles.ctaContainer}> 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>          
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
         </TouchableOpacity>      
-        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
-        <TouchableOpacity onPress={handleCreateTask}>
-          <Text style={commonStyles.labelTopNav}>Save</Text>
-        </TouchableOpacity>      
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Create Task</Text>
+        <TouchableOpacity onPress={handleCreateTask}>          
+          <Ionicons name="checkmark-outline" style={{color:'#34A654'}} size={36} />
+        </TouchableOpacity>
       </View> 
       <ScrollView> 
         <View style={[commonStyles.container,styles.container]}>
