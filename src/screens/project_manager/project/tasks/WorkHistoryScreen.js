@@ -22,7 +22,7 @@ const WorkHistoryModal = () => {
         setWorkHistory([]);
         setPage(1);
         setHasMore(true);
-        await loadHours();
+        await loadHours(1);
     };
 
     fetchWorkHistory();
@@ -83,7 +83,7 @@ const WorkHistoryModal = () => {
         {item.approved ? (
           <>
             <TouchableOpacity onPress={() => {deleteHours(item.id)}}>
-              <Ionicons name="trash" size={24} color="red" />
+              <Text style={{ color: "red" }}>undo</Text>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text>Approved</Text>

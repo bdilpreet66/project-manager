@@ -6,7 +6,7 @@ import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { Picker } from '@react-native-picker/picker';
 import { getUserData } from '../../../../store/creds';
-import { updateTask, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
+import { updateTaskStatus, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 import { Ionicons } from '@expo/vector-icons';
 
 const ViewTaskScreen = () => {
@@ -22,9 +22,6 @@ const ViewTaskScreen = () => {
   const [endDate, setEndDate] = useState(new Date(task.end_date));
   const [assignedTo, setAssignedTo] = useState(task.assigned_to);
   const [status, setStatus] = useState(task.status);
-
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
   const [totalCost, serTotalCost] = useState('0.00');
 
   const [comment, setComment] = useState();
@@ -74,12 +71,12 @@ const ViewTaskScreen = () => {
 
     try {
       // Create the task in the database
-      await updateTask(task);
-      Alert.alert("Success","Task has been updated!")
+      await updateTaskStatus(id,status,task.project_id);
+      alert("Task has been updated!");
     } catch (error) {
       // Handle or display error if something goes wrong
       console.error(error);
-      alert('Error', 'There was an error while creating the task.');
+      alert('There was an error while creating the task.');
     }
   }
 
@@ -88,20 +85,6 @@ const ViewTaskScreen = () => {
     const results = await getTaskComments(task.id);
     setComments(results);
     setComment('');
-  }
-
-  const onStartDateChange = (event, selectedDate) => {
-    setShowStartPicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setStartDate(selectedDate);
-    }
-  }
-
-  const onEndDateChange = (event, selectedDate) => {
-    setShowEndPicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setEndDate(selectedDate);
-    }
   }
 
   const statusBadge = (status) => {

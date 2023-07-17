@@ -188,6 +188,46 @@ export const updateTask = async (task) => {
   }
 };
 
+export const updateTaskStatus = async (id, status, project) => {
+  try {
+    let query = 'UPDATE Tasks SET status = ? WHERE id = ?';
+    const params = [
+      status,
+      id
+    ];
+    await executeSql(query, params);
+
+    console.log("task updated", project)
+    // Fetch all tasks associated with the same project_id
+    const tasks = await executeSql('SELECT * FROM Tasks WHERE project_id = ?', [project]);
+    // Check the status of all tasks
+    let allCompleted = true;
+    let anyInProgress = false;
+    for (let task of tasks) {
+      if (task.status !== 'completed') {
+        allCompleted = false;
+      }
+      if (task.status !== 'pending') {
+        anyInProgress = true;
+      }
+    }
+
+    // Update project status based on task statuses
+    let projectStatus;
+    if (allCompleted) {
+      projectStatus = 'completed';
+    } else if (anyInProgress) {
+      projectStatus = 'in-progress';
+    } else {
+      projectStatus = 'pending';
+    }
+    await executeSql('UPDATE Projects SET status = ? WHERE id = ?', [projectStatus, project]);
+  } catch (error) {
+    console.error('Error creating task:', error);
+    throw error;
+  }
+}
+
 
 export const getTasksByProject = async (projectId) => {
   try {
@@ -221,10 +261,18 @@ export const getWorkHistoryByProjectId = async (projectId) => {
               Tasks.id AS task_id,
               Tasks.name AS task_name,
               Tasks.assigned_to,
-              WorkHours.recorded_date
+              WorkHours.recorded_date,
+              WorkHours.hours,
+              WorkHours.minutes,
+              WorkHours.recorded_date,
+              WorkHours.recorded_by,
+              (Users.hourly_rate * WorkHours.hours) + (Users.hourly_rate * WorkHours.minutes / 60) as cost
           FROM Tasks 
-          INNER JOIN WorkHours ON Tasks.id = WorkHours.task_id 
-          WHERE Tasks.project_id = ?
+          INNER JOIN 
+            WorkHours ON Tasks.id = WorkHours.task_id
+          INNER JOIN 
+            Users ON WorkHours.recorded_by = Users.email
+          WHERE Tasks.project_id = ? AND WorkHours.approved = 1
           ORDER BY WorkHours.recorded_date DESC`;
 
       let params = [projectId];
@@ -442,6 +490,7 @@ export const getTasksByMember = async (page, searchText) => {
       is_active: Boolean(row.is_active),
       status: row.status,
       project_name: row.project_name,
+      project_id: row.project_id,
     }));
 
     return tasks;

@@ -5,7 +5,6 @@ import commonStyles from '../../../theme/commonStyles';
 import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../../../store/project';
 import theme from '../../../theme/theme';
 import { formatDate } from '../../../common/Date';
-import WorkHistoryModal from './WorkHistoryModal';
 import { Ionicons } from '@expo/vector-icons';
 
 const ViewProjectScreen = () => {
@@ -123,15 +122,10 @@ const ViewProjectScreen = () => {
           </View>            
           <View style={[styles.staticContent]}>
             <Text style={[commonStyles.inputLabel]}>$ {totalCost}</Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <TouchableOpacity onPress={() => navigation.navigate('Work History',{ projectId: projectData.id } )}>
               <Text style={[commonStyles.link,commonStyles.underline]}>View Logs</Text>
             </TouchableOpacity>            
           </View>
-          <WorkHistoryModal 
-            projectId={project.id} 
-            modalVisible={modalVisible} 
-            setModalVisible={setModalVisible} 
-          />
         </View>   
         
         <View style={styles.taskHeaderContainer}>
