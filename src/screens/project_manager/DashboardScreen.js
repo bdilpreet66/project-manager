@@ -27,14 +27,6 @@ const DashboardScreen = () => {
     }, [])
   );
   
-  const renderHeader = () => (
-    <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Project Name</Text>
-      <Text style={styles.headerText}>Status</Text>
-        <Text style={styles.headerText}>Progress</Text>
-    </View>
-  );
-  
   return (
     <View style={commonStyles.container}>
         <Image source={require('../../../assets/Logo.png')} style={commonStyles.logoLabel} resizeMode='contain'/>
