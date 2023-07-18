@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { getTasksByMember, listIncompletePrerequisite } from '../../../store/project'; // Assuming you have the user functions in a file named 'user.js'
 import commonStyles from '../../../theme/commonStyles';
 import { formatDate } from '../../../common/Date'
+import { statusBadge } from '../../../common/Status';
 import theme from '../../../theme/theme';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -52,34 +53,6 @@ const ProjectListScreen = () => {
     loadTasks(1);
   };
 
-  const statusBadge = (status, end) => {    
-    let badgeClass = commonStyles.badge;
-    let styles = [badgeClass];
-
-    if ((new Date(end)) > (new Date())){    
-      if (status === 'pending') {
-        styles.push(commonStyles.badgeWarning);
-      }
-      
-      if (status === 'in-progress') {
-        styles.push(commonStyles.badgeInfo);
-      }
-    } else {
-      styles.push(commonStyles.badgeError);
-      if (status !== 'completed'){
-        status = "overdue"
-      }
-    }
-      
-    if (status === 'completed') {
-      styles.push(commonStyles.badgeSuccess);
-    }
-    
-    return (
-      <Text style={styles}>{status}</Text>
-    )
-  }
-
   const handleTaskView = async (task) => { 
     const prerequisitesData = await listIncompletePrerequisite(task.id);
     if (prerequisitesData.length > 0) {
@@ -105,8 +78,8 @@ const ProjectListScreen = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
       }}>
-        <Text>{statusBadge(item.status, item.end_date)}</Text>
-        <Text>{item.project_name}</Text>
+        <View>{statusBadge(item.status, item.end_date)}</View>
+        <Text style={{color:theme.colors.grey}}>{item.project_name}</Text>
       </View>
     </TouchableOpacity>    
   );

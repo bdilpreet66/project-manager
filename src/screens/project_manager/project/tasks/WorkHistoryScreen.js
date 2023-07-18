@@ -109,13 +109,13 @@ const WorkHistoryModal = () => {
       <View style={styles.container}>
         <View style={styles.ctaContainer}> 
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={commonStyles.labelTopNav}>Cancel</Text>
+              <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
             </TouchableOpacity>      
             <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
             <TouchableOpacity>
-                <Text style={styles.labelhidden}>Cancel</Text>
+                <Text style={styles.labelhidden}></Text>
             </TouchableOpacity>      
-        </View> 
+        </View>
         <View style={styles.modalView}>
             <FlatList
                 data={workHistory}

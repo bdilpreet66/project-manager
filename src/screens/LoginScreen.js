@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Image, Alert } from 'react-native';
 import theme from '../theme/theme';
 import commonStyles from '../theme/commonStyles';
 import { validateLogin } from "../store/user";
@@ -18,14 +18,14 @@ const Login = ({navigation}) => {
     // Email validation
     if (!email) {
       // Handle case when email is empty
-      alert('Please enter your email.');
+      Alert.alert('Error','Please enter your email.');
       return;
     }
   
     // Password validation
     if (!password) {
       // Handle case when password is empty
-      alert('Please enter your password.');
+      Alert.alert('Error','Please enter your password.');
       return;
     }
   

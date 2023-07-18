@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Platform, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
@@ -38,12 +38,12 @@ const CreateTaskScreen = () => {
     // Validate that start date is before end date
     if (!name || !description || !startDate || !endDate) {
       // Handle case when email is empty
-      alert('Please complete the form before submit.');
+      Alert.alert('Error','Please complete the form before submit.');
       return;
     }
 
     if (startDate > endDate) {
-      alert('Start date should be before end date.');
+      Alert.alert('Error','Start date should be before end date.');
       return;
     }
     console.log("go")
@@ -68,7 +68,7 @@ const CreateTaskScreen = () => {
     } catch (error) {
       // Handle or display error if something goes wrong
       console.error(error);
-      alert('There was an error while creating the task.');
+      Alert.alert('Error','There was an error while creating the task.');
     }
   }
 

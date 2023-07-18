@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, FlatList, Dimensions, ScrollView } from 'react-native';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import commonStyles from '../../../theme/commonStyles';
-import { updateProjectByID, getTasksByProject, getProjectTotalCost } from './../../../store/project';
+import { updateProjectByID, getTasksByProject, getProjectTotalCost, getProjectDetails } from './../../../store/project';
 import theme from '../../../theme/theme';
 import { formatDate } from '../../../common/Date';
 import { Ionicons } from '@expo/vector-icons';
+import {statusBadge} from '../../../common/Status';
 
 const ViewProjectScreen = () => {
   const route = useRoute();
   const { project } = route.params;
+  console.log(project)
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
   const [totalCost, serTotalCost] = useState('0.00');
-  const [modalVisible, setModalVisible] = useState(false);
 
   const [projectData, setProjectData] = useState({
     id: project.id,
@@ -31,8 +32,8 @@ const ViewProjectScreen = () => {
         const taskData = await getTasksByProject(project.id);
         setTasks(taskData);
 
-      const totalCost = await getProjectTotalCost(project.id);    
-      serTotalCost(totalCost);
+        const totalCost = await getProjectTotalCost(project.id);    
+        serTotalCost(totalCost);
       })();
 
     }, [])
@@ -47,34 +48,6 @@ const ViewProjectScreen = () => {
         Alert.alert('Error', 'Failed to save project details.');
     }
   };
-
-  const statusBadge = (status, end) => {    
-    let badgeClass = commonStyles.badge;
-    let styles = [badgeClass];
-
-    if ((new Date(end)) > (new Date())){    
-      if (status === 'pending') {
-        styles.push(commonStyles.badgeWarning);
-      }
-      
-      if (status === 'in-progress') {
-        styles.push(commonStyles.badgeInfo);
-      }
-    } else {
-      styles.push(commonStyles.badgeError);
-      if (status !== 'completed'){
-        status = "overdue"
-      }
-    }
-      
-    if (status === 'completed') {
-      styles.push(commonStyles.badgeSuccess);
-    }
-    
-    return (
-      <Text style={styles}>{status}</Text>
-    )
-  }
 
   return (
     <View style={styles.scroll}>      
@@ -139,11 +112,11 @@ const ViewProjectScreen = () => {
           {tasks.map(
             (item,key) => (    
               <TouchableOpacity key={key} style={[styles.listItem]} onPress={() => navigation.navigate('View Task', { project: project, task: item })}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text>{item.id}# {item.name}</Text>
-                  <Text>Due: {formatDate(item.end_date)}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <View style={{width:'60%'}}><Text>{item.id}# {item.name}</Text></View>
+                  <View><Text>Due: {formatDate(item.end_date)}</Text></View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     {statusBadge(item.status, item.end_date)}
                     <Text>{item.assigned_to}</Text>
                 </View>

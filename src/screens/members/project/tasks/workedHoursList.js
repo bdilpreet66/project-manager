@@ -94,12 +94,14 @@ const WorkHistoryModal = () => {
       <View style={styles.container}>
         <View style={styles.ctaContainer}> 
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={commonStyles.labelTopNav}>Cancel</Text>
+                <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
             </TouchableOpacity>      
             <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>
-                <Text>Add</Text>
-            </TouchableOpacity>      
+            {task.status !== "completed" ? (
+                <TouchableOpacity onPress={() => navigation.navigate('Add Worked Hours', { task: task })}>
+                  <Ionicons name="add-outline" style={{color:'#34A654'}} size={36} />
+                </TouchableOpacity>
+              ) : <Text></Text>}
         </View> 
         <View style={styles.modalView}>
             <FlatList

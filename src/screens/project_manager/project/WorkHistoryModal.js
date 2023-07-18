@@ -4,6 +4,7 @@ import { getWorkHistoryByProjectId } from './../../../store/project';
 import commonStyles from '../../../theme/commonStyles';
 import theme from '../../../theme/theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const WorkHistoryModal = () => {
   const navigation = useNavigation();
@@ -47,11 +48,11 @@ const WorkHistoryModal = () => {
     <View style={styles.container}>
       <View style={styles.ctaContainer}> 
           <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={commonStyles.labelTopNav}>Cancel</Text>
+              <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
           </TouchableOpacity>      
           <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Worked Hours</Text>
           <TouchableOpacity>
-              <Text style={styles.labelhidden}>Cancel</Text>
+              <Text style={styles.labelhidden}></Text>
           </TouchableOpacity>      
       </View> 
       <View style={styles.modalView}>

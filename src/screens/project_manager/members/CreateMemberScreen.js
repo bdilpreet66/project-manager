@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from "../../../store/creds";
 import { searchUsers, createUser } from "../../../store/user";
@@ -21,29 +21,29 @@ const CreateMemberPage = () => {
 
   const handleSave = async () => {
     if (!email || !password || !hourlyRate) {
-      alert('Please fill in all fields.');
+      Alert.alert('Error','Please fill in all fields.');
       return;
     }
   
     if (!isValidEmail(email)) {
-      alert('Please enter a valid email address.');
+      Alert.alert('Error','Please enter a valid email address.');
       return;
     }
   
     if (password.length < 8) {
-      alert('Password should be at least 8 characters long.');
+      Alert.alert('Error','Password should be at least 8 characters long.');
       return;
     }
   
     if (!isValidHourlyRate(hourlyRate)) {
-      alert('Please enter a valid hourly rate.');
+      Alert.alert('Error','Please enter a valid hourly rate.');
       return;
     }
 
     let userExists = await searchUsers(email);
 
     if (userExists.length > 0) {
-      alert("User already exists");
+      Alert.alert("Error","User already exists");
       return;
     }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation,useRoute } from '@react-navigation/native';
 import { updateHours, updatePassword, deleteUser } from "../../../store/user";
 import theme from '../../../theme/theme';
@@ -21,12 +21,12 @@ const EditMemberScreen = () => {
 
   const handleSetHours = async () => {
     if (!hours) {
-      alert('Please enter Hourly Rate.');
+      Alert.alert('Error','Please enter Hourly Rate.');
       return;
     }
 
     if (!isValidHourlyRate(hours)) {
-      alert('Please enter a valid hourly rate.');
+      Alert.alert('Error','Please enter a valid hourly rate.');
       return;
     }
 
@@ -39,12 +39,12 @@ const EditMemberScreen = () => {
 
   const handleChangePassword = async () => {
     if (!password) {
-      alert('Please enter password.');
+      Alert.alert('Error','Please enter password.');
       return;
     }
   
     if (password.length < 8) {
-      alert('Password should be at least 8 characters long.');
+      Alert.alert('Error','Password should be at least 8 characters long.');
       return;
     }
 

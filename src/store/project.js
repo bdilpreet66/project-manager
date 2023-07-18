@@ -597,11 +597,13 @@ export const getProjectProgress = async () => {
 };
 
 export const getInprogressOverdueTasks = async () => {
+  user = await getUserData();
   const sql = `SELECT Tasks.id, Tasks.name as name, Projects.name as project_name, 
-  Tasks.assigned_to, Tasks.status, Tasks.end_date, Tasks.description, Tasks.start_date
+  Tasks.assigned_to, Tasks.status, Tasks.end_date, Tasks.description, Tasks.start_date, Tasks.project_id
   FROM Tasks
   INNER JOIN Projects ON Tasks.project_id = Projects.id
-  ORDER BY Tasks.end_date DESC`;
+  WHERE Tasks.status NOT IN ('completed') AND Tasks.assigned_to = '${user.email}'
+  ORDER BY Tasks.end_date`;
   const params = [];
   const result = await executeSql(sql, params);
 
@@ -613,7 +615,8 @@ export const getInprogressOverdueTasks = async () => {
     end_date: row.end_date,
     status: row.status,
     description: row.description,
-    start_date: row.start_date
+    start_date: row.start_date,
+    project_id: row.project_id
   }));
 
   return tasks;
@@ -714,4 +717,24 @@ export const getProjectSummaryByMember = async () => {
     total_projects,
     total_tasks,
   };
+};
+
+
+
+export const getProjectDetails = async (id) => {
+  const sql = `SELECT id, name, status, description, total_cost, completion_date, created_by
+  FROM Projects WHERE id = ${id}`;
+  const params = [];
+  const result = await executeSql(sql, params);
+
+  const project = result.map((row) => ({
+    id: row.id,
+    name: row.name,
+    status: row.status,
+    description: row.description,
+    total_cost: row.total_cost,
+    completion_date: row.completion_date
+  }));
+
+  return project;
 };

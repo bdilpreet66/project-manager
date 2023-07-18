@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TextInput, Switch, FlatList,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Switch, FlatList,TouchableOpacity, Alert } from 'react-native';
 import { navigation, useRoute, useFocusEffect, useNavigation } from '@react-navigation/native';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
@@ -39,7 +39,7 @@ const PrerequisiteTasksScreen = () => {
             await deletePrerequisite(task.id, preReq.id);
         }
     } catch (error) {
-      alert(error.message);
+      Alert.alert('Error',error.message);
     }
     
     fetchTasks();

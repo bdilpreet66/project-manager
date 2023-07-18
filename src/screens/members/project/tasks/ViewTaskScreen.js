@@ -8,6 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import { getUserData } from '../../../../store/creds';
 import { updateTaskStatus, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 import { Ionicons } from '@expo/vector-icons';
+import { statusBadge } from '../../../../common/Status';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -46,37 +47,14 @@ const ViewTaskScreen = () => {
   );
 
   const handleUpdateTask = async () => {
-    // Validate that start date is before end date
-    if (!name || !description || !startDate || !endDate) {
-      // Handle case when email is empty
-      Alert.alert('Error','Please complete the form before submit.');
-      return;
-    }
-
-    if (startDate >= endDate) {
-      Alert.alert('Error', 'Start date should be before end date.');
-      return;
-    }
-
-    // Create a new task object
-    const task = {
-      id: id,
-      name: name,
-      description: description,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      assigned_to: assignedTo,
-      status: status,
-    };
-
     try {
       // Create the task in the database
       await updateTaskStatus(id,status,task.project_id);
-      alert("Task has been updated!");
+      Alert.alert("Success","Task has been updated!");
     } catch (error) {
       // Handle or display error if something goes wrong
       console.error(error);
-      alert('There was an error while creating the task.');
+      Alert.alert('Error','There was an error while creating the task.');
     }
   }
 
@@ -85,29 +63,6 @@ const ViewTaskScreen = () => {
     const results = await getTaskComments(task.id);
     setComments(results);
     setComment('');
-  }
-
-  const statusBadge = (status) => {
-    let styles = [commonStyles.inputLabel, commonStyles.badge, { width: 120, textAlign: 'center' }];
-    
-    if (status === 'pending') {
-      styles.push(commonStyles.badgeWarning);
-    }
-    else
-    if (status === 'completed') {
-      styles.push(commonStyles.badgeSuccess);
-    }
-    else
-    if (status === 'in-progress') {
-      styles.push(commonStyles.badgeInfo);
-    }
-    else {
-      styles.push(commonStyles.badgeError);
-    }
-    
-    return (
-      <Text style={styles}>{status}</Text>
-    )
   }
 
   return (
@@ -174,7 +129,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Status</Text>
             </View>
             <View style={[styles.staticContent]}>
-              {statusBadge(task.status)}       
+              {statusBadge(task.status,task.end_date)}       
             </View> 
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Total Cost</Text>        

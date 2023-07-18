@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Platform, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import commonStyles from '../../../../theme/commonStyles';
 import theme from '../../../../theme/theme';
 import { createWorkedHour } from '../../../../store/project';
+import { Ionicons } from '@expo/vector-icons';
 
 const AddWorkedHourScreen = () => {
     const route = useRoute();
@@ -20,17 +21,17 @@ const AddWorkedHourScreen = () => {
   
     const handleCreateWorkedHour = async () => {
         if (hours <= 0 && minutes <= 0) {
-            alert('Please record some work hours.');
+            Alert.alert('Error','Please record some work hours.');
             return;
         }
 
         if (minutes > 60 ) {
-            alert('You cannot record more minutes than 60');
+          Alert.alert('Error','You cannot record more minutes than 60.');
             return;
         }
         
         if (hours > 23 ) {
-            alert('You cannot record more hours than 24');
+          Alert.alert('Error','You cannot record more hours than 24.');
             return;
         }
   
@@ -47,7 +48,7 @@ const AddWorkedHourScreen = () => {
             navigation.goBack();
         } catch (error) {
             console.error(error);
-            alert('There was an error while recording the worked hours.');
+            Alert.alert('Error','There was an error while recording the worked hours.');
         }
     }
   
@@ -62,11 +63,11 @@ const AddWorkedHourScreen = () => {
     <View style={styles.scroll}>
       <View style={styles.ctaContainer}> 
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={commonStyles.labelTopNav}>Cancel</Text>
+          <Ionicons name="close-outline" style={{color:'#D85151'}} size={36} />
         </TouchableOpacity>      
-        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Project Details</Text>
+        <Text style={[commonStyles.labelTopNavHeading,commonStyles.bold]}>Add Work Hours</Text>
         <TouchableOpacity onPress={handleCreateWorkedHour}>
-          <Text style={commonStyles.labelTopNav}>Save</Text>
+          <Ionicons name="checkmark-outline" style={{color:'#34A654'}} size={36} />
         </TouchableOpacity>      
       </View> 
       <ScrollView> 

@@ -8,6 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import { getAvailableUser }  from '../../../../store/user';
 import { updateTask, listPrerequisite, addTaskComment, getTaskComments, calculateWorkedHour } from '../../../../store/project';
 import { Ionicons } from '@expo/vector-icons';
+import {statusBadge} from '../../../../common/Status';
 
 const ViewTaskScreen = () => {
   const route = useRoute();
@@ -65,12 +66,12 @@ const ViewTaskScreen = () => {
     // Validate that start date is before end date
     if (!name || !description || !startDate || !endDate) {
       // Handle case when email is empty
-      alert('Please complete the form before submit.');
+      Alert.alert('Error','Please complete the form before submit.');
       return;
     }
 
-    if (startDate >= endDate) {
-      alert('Error', 'Start date should be before end date.');
+    if (startDate > endDate) {
+      Alert.alert('Error', 'Start date should be before end date.');
       return;
     }
 
@@ -117,29 +118,6 @@ const ViewTaskScreen = () => {
     if (selectedDate) {
       setEndDate(selectedDate);
     }
-  }
-
-  const statusBadge = (status) => {
-    let styles = [commonStyles.inputLabel, commonStyles.badge, { width: 100, textAlign: 'center' }];
-    
-    if (status === 'pending') {
-      styles.push(commonStyles.badgeWarning);
-    }
-    else
-    if (status === 'completed') {
-      styles.push(commonStyles.badgeSuccess);
-    }
-    else
-    if (status === 'in-progress') {
-      styles.push(commonStyles.badgeInfo);
-    }
-    else {
-      styles.push(commonStyles.badgeError);
-    }
-    
-    return (
-      <Text style={styles}>{status}</Text>
-    )
   }
 
   return (
@@ -247,7 +225,7 @@ const ViewTaskScreen = () => {
               <Text style={commonStyles.inputLabel}>Status</Text>
             </View>
             <View style={[styles.staticContent]}>
-              {statusBadge(task.status)}       
+              {statusBadge(task.status, task.end_date)}       
             </View> 
             <View style={styles.inputContainer}>
               <Text style={commonStyles.inputLabel}>Total Cost</Text>        
