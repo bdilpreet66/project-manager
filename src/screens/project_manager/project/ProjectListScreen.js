@@ -20,8 +20,6 @@ const ProjectListScreen = () => {
   useFocusEffect(
     useCallback(() => {
       handleSearch();
-      // return a cleanup function if necessary
-      return () => { };
     }, [])
   );
   

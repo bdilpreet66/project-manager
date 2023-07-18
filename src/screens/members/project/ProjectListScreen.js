@@ -32,12 +32,11 @@ const ProjectListScreen = () => {
   
     try {
       const newTasks = await getTasksByMember(cur_page, searchText); // Fetch tasks from the first page
-  
+      console.log(newTasks)
       setTasks((prevTasks) => [...prevTasks, ...newTasks]);
-      setHasMore(newTasks.length > 0);
       setPage(cur_page + 1);
+      setHasMore(newTasks.length > 0);
     } catch (error) {
-      console.error('Error loading tasks:', error);
       setHasMore(false);
     }
   
@@ -46,7 +45,6 @@ const ProjectListScreen = () => {
 
   const handleSearch = async () => {
     // Reset pagination and load tasks based on the search text
-    console.log("test")
     setPage(1);
     setTasks([]);
     setHasMore(true);

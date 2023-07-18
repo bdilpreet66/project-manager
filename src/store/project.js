@@ -39,8 +39,7 @@ export const listProjects = async (page, searchText) => {
   
       return projects;
     } catch (error) {
-      console.error('Error listing projects:', error);
-      throw error;
+      return [];
     }
 };
 
@@ -72,8 +71,7 @@ export const getAvailableTasks = async (projectId, currentTaskId) => {
     
     return tasks;
   } catch (error) {
-    console.error('Error listing tasks:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -249,8 +247,7 @@ export const getTasksByProject = async (projectId) => {
 
     return tasks;
   } catch (error) {
-    console.error('Error listing tasks:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -281,8 +278,7 @@ export const getWorkHistoryByProjectId = async (projectId) => {
             
       return results;
   } catch (error) {
-      console.error('Error retrieving work history:', error);
-      throw error;
+      return []
   }
 };
 
@@ -339,8 +335,7 @@ export const listPrerequisite = async (taskId) => {
 
     return tasks;
   } catch (error) {
-    console.error('Error creating prerequisite:', error);
-    throw error;
+    return []
   }
 };
 
@@ -357,8 +352,7 @@ export const listIncompletePrerequisite = async (taskId) => {
 
     return tasks;
   } catch (error) {
-    console.error('Error creating prerequisite:', error);
-    throw error;
+    return []
   }
 };
 
@@ -388,8 +382,7 @@ export const getTaskComments = async (taskId) => {
     return results;
     
   } catch (error) {
-    console.error('Error retrieving task comments:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -450,8 +443,7 @@ export const listWorkHours = async (page, id) => {
 
     return workHours;
   } catch (error) {
-    console.error('Error listing work hours:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -495,8 +487,7 @@ export const getTasksByMember = async (page, searchText) => {
 
     return tasks;
   } catch (error) {
-    console.error('Error listing users:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -533,8 +524,7 @@ export const calculateWorkedHour = async (id, user = "") => {
 
     return totalCost.toFixed(2);
   } catch (error) {
-    console.error('Error listing work hours:', error);
-    throw error;
+    return 0.00;
   }
 };
 
@@ -555,8 +545,7 @@ export const getProjectTotalCost = async (projectId) => {
 
     return totalCost.toFixed(2);
   } catch (error) {
-    console.log('Error calculating project cost.');
-    throw error;
+    return 0.00
   }
 }
 
@@ -574,52 +563,60 @@ export const deleteWorkHours = async (id) => {
 
 
 export const getProjectProgress = async () => {
-  const sql = `SELECT id, name, status, description, total_cost, completion_date,
-  (SELECT MAX(end_date) FROM Tasks WHERE project_id = Projects.id) as due_date,
-  ((SELECT COUNT(*) FROM Tasks WHERE status = 'completed' AND project_id = Projects.id) * 1.0 / 
-   (SELECT COUNT(*) FROM Tasks WHERE project_id = Projects.id)) as progress
-  FROM Projects`;
-  const params = [];
-  const result = await executeSql(sql, params);
+  try{
+    const sql = `SELECT id, name, status, description, total_cost, completion_date,
+    (SELECT MAX(end_date) FROM Tasks WHERE project_id = Projects.id) as due_date,
+    ((SELECT COUNT(*) FROM Tasks WHERE status = 'completed' AND project_id = Projects.id) * 1.0 / 
+    (SELECT COUNT(*) FROM Tasks WHERE project_id = Projects.id)) as progress
+    FROM Projects`;
+    const params = [];
+    const result = await executeSql(sql, params);
 
-  const projects = result.map((row) => ({
-    id: row.id,
-    name: row.name,
-    due_date: row.due_date,
-    status: row.status,
-    progress: row.progress,
-    description: row.description,
-    total_cost: row.total_cost,
-    completion_date: row.completion_date
-  }));
+    const projects = result.map((row) => ({
+      id: row.id,
+      name: row.name,
+      due_date: row.due_date,
+      status: row.status,
+      progress: row.progress,
+      description: row.description,
+      total_cost: row.total_cost,
+      completion_date: row.completion_date
+    }));
 
-  return projects;
+    return projects;
+  } catch {
+    return [];
+  }
 };
 
 export const getInprogressOverdueTasks = async () => {
-  user = await getUserData();
-  const sql = `SELECT Tasks.id, Tasks.name as name, Projects.name as project_name, 
-  Tasks.assigned_to, Tasks.status, Tasks.end_date, Tasks.description, Tasks.start_date, Tasks.project_id
-  FROM Tasks
-  INNER JOIN Projects ON Tasks.project_id = Projects.id
-  WHERE Tasks.status NOT IN ('completed') AND Tasks.assigned_to = '${user.email}'
-  ORDER BY Tasks.end_date`;
-  const params = [];
-  const result = await executeSql(sql, params);
-
-  const tasks = result.map((row) => ({
-    id: row.id,
-    name: row.name,
-    project_name: row.project_name,
-    assigned_to: row.assigned_to,
-    end_date: row.end_date,
-    status: row.status,
-    description: row.description,
-    start_date: row.start_date,
-    project_id: row.project_id
-  }));
-
-  return tasks;
+  try {
+    user = await getUserData();
+    const sql = `SELECT Tasks.id, Tasks.name as name, Projects.name as project_name, 
+    Tasks.assigned_to, Tasks.status, Tasks.end_date, Tasks.description, Tasks.start_date, Tasks.project_id
+    FROM Tasks
+    INNER JOIN Projects ON Tasks.project_id = Projects.id
+    WHERE Tasks.status NOT IN ('completed') AND Tasks.assigned_to = '${user.email}'
+    ORDER BY Tasks.end_date`;
+    const params = [];
+    const result = await executeSql(sql, params);
+  
+    const tasks = result.map((row) => ({
+      id: row.id,
+      name: row.name,
+      project_name: row.project_name,
+      assigned_to: row.assigned_to,
+      end_date: row.end_date,
+      status: row.status,
+      description: row.description,
+      start_date: row.start_date,
+      project_id: row.project_id
+    }));
+  
+    return tasks;
+  } catch (error) {
+    return [];
+  }
 };
 
 
@@ -722,19 +719,23 @@ export const getProjectSummaryByMember = async () => {
 
 
 export const getProjectDetails = async (id) => {
-  const sql = `SELECT id, name, status, description, total_cost, completion_date, created_by
-  FROM Projects WHERE id = ${id}`;
-  const params = [];
-  const result = await executeSql(sql, params);
-
-  const project = result.map((row) => ({
-    id: row.id,
-    name: row.name,
-    status: row.status,
-    description: row.description,
-    total_cost: row.total_cost,
-    completion_date: row.completion_date
-  }));
-
-  return project;
+  try {
+    const sql = `SELECT id, name, status, description, total_cost, completion_date, created_by
+    FROM Projects WHERE id = ${id}`;
+    const params = [];
+    const result = await executeSql(sql, params);
+  
+    const project = result.map((row) => ({
+      id: row.id,
+      name: row.name,
+      status: row.status,
+      description: row.description,
+      total_cost: row.total_cost,
+      completion_date: row.completion_date
+    }));
+  
+    return project;
+  } catch (error) {
+    return [];
+  }
 };
