@@ -56,7 +56,7 @@ const ProjectListScreen = () => {
         alignItems: 'center',
       }}>
         <Text>{item.id}# {item.name}</Text>
-        {item.status == "complete" ?
+        {item.status == "completed" ?
           <Text>Completed: {item.completion_date}</Text> :
           <Text>Incomplete</Text>
         }

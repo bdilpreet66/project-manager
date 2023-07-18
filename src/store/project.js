@@ -179,7 +179,14 @@ export const updateTask = async (task) => {
     } else {
       projectStatus = 'pending';
     }
-    await executeSql('UPDATE Projects SET status = ? WHERE id = ?', [projectStatus, task.project_id]);
+    
+    let currentDate = new Date();
+
+    // Format the date as a string in the format SQLite can store it.
+    // You can adjust this format to suit your needs, but YYYY-MM-DD is a common format for SQL databases.
+    let formattedDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
+    
+    await executeSql('UPDATE Projects SET status = ?, completion_date = ? WHERE id = ?', [projectStatus, formattedDate, task.project_id]);
   } catch (error) {
     console.error('Error creating task:', error);
     throw error;
