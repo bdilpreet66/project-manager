@@ -110,7 +110,7 @@ const DashboardScreen = () => {
           <View style={{ width: '100%' }}>
             <Text style={ [styles.title, commonStyles.bold] }>My Tasks</Text>
             {tasks.map((item, index) => (
-              <TouchableOpacity key={index} style={styles.itemContainer}>
+              <View key={index} style={styles.itemContainer}>
                 <View style={{ width: '60%',marginRight:10 }}>
                   <Text style={styles.itemText}>{ item.id }#. {item.name}</Text>
                   {statusBadge(item.status,item.end_date)}
@@ -119,7 +119,7 @@ const DashboardScreen = () => {
                   <Text style={[styles.itemText]}>Due - {formatDate(item.end_date)}</Text>
                   <Text style={[styles.itemText, {color:theme.colors.grey}]}>{ item.project_name }</Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))}
           </View>
         </ScrollView>

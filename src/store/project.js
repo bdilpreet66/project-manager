@@ -619,41 +619,72 @@ export const getInprogressOverdueTasks = async () => {
   }
 };
 
-
 export const getProjectSummary = async () => {
   const params = [];
 
-  let sql = `SELECT COUNT(*) AS total_count FROM Projects WHERE status = 'completed';`;
+  let sql = `
+    SELECT COALESCE(COUNT(*), 0) AS completed_projects
+    FROM Projects
+    WHERE status = 'completed';
+  `;
   const completedProjectsResult = await executeSql(sql, params);
-  const completed_projects = completedProjectsResult[0].total_count;
+  const completed_projects = completedProjectsResult[0].completed_projects;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'completed';`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS completed_tasks
+    FROM Tasks
+    WHERE status = 'completed';
+  `;
   const completedTasksResult = await executeSql(sql, params);
-  const completed_tasks = completedTasksResult[0].total_count;
+  const completed_tasks = completedTasksResult[0].completed_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'in-progress';`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS inprogress_tasks
+    FROM Tasks
+    WHERE status = 'in-progress' AND date('now') < date(end_date);
+  `;
   const inProgressTasksResult = await executeSql(sql, params);
-  const inprogress_tasks = inProgressTasksResult[0].total_count;
+  const inprogress_tasks = inProgressTasksResult[0].inprogress_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'overdue';`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS overdue_tasks
+    FROM Tasks
+    WHERE status != 'completed' AND date('now') > date(end_date);
+  `;
   const overdueTasksResult = await executeSql(sql, params);
-  const overdue_tasks = overdueTasksResult[0].total_count;
+  const overdue_tasks = overdueTasksResult[0].overdue_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'pending';`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS pending_tasks
+    FROM Tasks
+    WHERE status = 'pending' AND date('now') < date(end_date);
+  `;
   const pendingTasksResult = await executeSql(sql, params);
-  const pending_tasks = pendingTasksResult[0].total_count;
+  const pending_tasks = pendingTasksResult[0].pending_tasks;
 
-  sql = `SELECT SUM(total_cost) AS total_cost FROM Projects;`;
+  sql = `
+    SELECT COALESCE(SUM((w.hours * u.hourly_rate) + (w.minutes / 60 * u.hourly_rate)), 0) as total_cost
+    FROM Users u
+    INNER JOIN Tasks t ON u.email = t.assigned_to
+    INNER JOIN WorkHours w ON t.id = w.task_id
+    WHERE w.approved = 1
+  `;
   const totalCostResult = await executeSql(sql, params);
   const total_cost = totalCostResult[0].total_cost;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Projects;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS total_projects
+    FROM Projects;
+  `;
   const totalProjectsResult = await executeSql(sql, params);
-  const total_projects = totalProjectsResult[0].total_count;
+  const total_projects = totalProjectsResult[0].total_projects;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS total_tasks
+    FROM Tasks;
+  `;
   const totalTasksResult = await executeSql(sql, params);
-  const total_tasks = totalTasksResult[0].total_count;
+  const total_tasks = totalTasksResult[0].total_tasks;
 
   return {
     completed_projects,
@@ -668,41 +699,78 @@ export const getProjectSummary = async () => {
 };
 
 export const getProjectSummaryByMember = async () => {
-  user = await getUserData();
+  const user = await getUserData();
   const currentUserEmail = user.email;
   const params = [currentUserEmail];
 
-  let sql = `SELECT COUNT(DISTINCT Tasks.project_id) AS total_count FROM Projects INNER JOIN Tasks ON Tasks.project_id = Projects.id  WHERE Projects.status = 'completed' AND Tasks.assigned_to = ?;`;
+  let sql = `
+    SELECT COALESCE(COUNT(DISTINCT Tasks.project_id), 0) AS completed_projects
+    FROM Projects
+    INNER JOIN Tasks ON Tasks.project_id = Projects.id
+    WHERE Projects.status = 'completed' AND Tasks.assigned_to = ?;
+  `;
   const completedProjectsResult = await executeSql(sql, params);
-  const completed_projects = completedProjectsResult[0].total_count;
+  const completed_projects = completedProjectsResult[0].completed_projects;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'completed' AND assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS completed_tasks
+    FROM Tasks
+    WHERE status = 'completed' AND assigned_to = ?;
+  `;
   const completedTasksResult = await executeSql(sql, params);
-  const completed_tasks = completedTasksResult[0].total_count;
+  const completed_tasks = completedTasksResult[0].completed_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'in-progress' AND assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS inprogress_tasks
+    FROM Tasks
+    WHERE status = 'in-progress' AND date('now') < date(end_date) AND assigned_to = ?;
+  `;
   const inProgressTasksResult = await executeSql(sql, params);
-  const inprogress_tasks = inProgressTasksResult[0].total_count;
+  const inprogress_tasks = inProgressTasksResult[0].inprogress_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'overdue' AND assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS overdue_tasks
+    FROM Tasks
+    WHERE status <> 'completed' AND date('now') > date(end_date) AND assigned_to = ?;
+  `;
+
   const overdueTasksResult = await executeSql(sql, params);
-  const overdue_tasks = overdueTasksResult[0].total_count;
+  const overdue_tasks = overdueTasksResult[0].overdue_tasks;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE status = 'pending' AND assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS pending_tasks
+    FROM Tasks
+    WHERE status = 'pending' AND date('now') < date(end_date) AND assigned_to = ?;
+  `;
   const pendingTasksResult = await executeSql(sql, params);
-  const pending_tasks = pendingTasksResult[0].total_count;
+  const pending_tasks = pendingTasksResult[0].pending_tasks;
 
-  sql = `SELECT SUM( (WorkHours.hours + (WorkHours.minutes/60) * Users.hourly_rate )  ) AS total_cost FROM Tasks INNER JOIN WorkHours ON WorkHours.task_id = Tasks.id INNER JOIN Users ON Users.email = Tasks.assigned_to WHERE Tasks.assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(SUM((COALESCE(w.hours,0) * u.hourly_rate) + (COALESCE(w.minutes,0) / 60 * u.hourly_rate)), 0) as total_cost
+    FROM Users u
+    INNER JOIN Tasks t ON u.email = t.assigned_to
+    INNER JOIN WorkHours w ON t.id = w.task_id
+    WHERE u.email = ? AND w.approved = 1
+  `;
   const totalCostResult = await executeSql(sql, params);
   const total_cost = totalCostResult[0].total_cost;
 
-  sql = `SELECT COUNT(DISTINCT Tasks.project_id) AS total_count FROM Projects INNER JOIN Tasks ON Tasks.project_id = Projects.id  WHERE Tasks.assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(DISTINCT Tasks.project_id), 0) AS total_projects
+    FROM Projects
+    INNER JOIN Tasks ON Tasks.project_id = Projects.id
+    WHERE Tasks.assigned_to = ?;
+  `;
   const totalProjectsResult = await executeSql(sql, params);
-  const total_projects = totalProjectsResult[0].total_count;
+  const total_projects = totalProjectsResult[0].total_projects;
 
-  sql = `SELECT COUNT(*) AS total_count FROM Tasks WHERE assigned_to = ?;`;
+  sql = `
+    SELECT COALESCE(COUNT(*), 0) AS total_tasks
+    FROM Tasks
+    WHERE assigned_to = ?;
+  `;
   const totalTasksResult = await executeSql(sql, params);
-  const total_tasks = totalTasksResult[0].total_count;
+  const total_tasks = totalTasksResult[0].total_tasks;
 
   return {
     completed_projects,
@@ -715,6 +783,7 @@ export const getProjectSummaryByMember = async () => {
     total_tasks,
   };
 };
+
 
 
 
